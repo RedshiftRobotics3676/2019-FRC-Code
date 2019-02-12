@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.commands.Drive;
 import frc.commands.ExampleCommand;
 import frc.subsytems.DriveTrain;
+import frc.subsytems.Elevator;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -37,8 +38,10 @@ public class Robot extends TimedRobot {
 
   WPI_TalonSRX leftDrive;
   WPI_TalonSRX rightDrive;
+  WPI_TalonSRX eTalon;
 
   public static DriveTrain kDriveTrain;
+  public static Elevator kElevator;
 
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
@@ -54,15 +57,17 @@ public class Robot extends TimedRobot {
 
     leftDrive = new WPI_TalonSRX(1);
     rightDrive = new WPI_TalonSRX(2);
+    eTalon = new WPI_TalonSRX(6);
 
     kDriveTrain = new DriveTrain(leftDrive, rightDrive);
+    kElevator = new Elevator(eTalon);
 
     ahrs = new AHRS(SPI.Port.kMXP);
 
     oi = new OI();
     
-    SmartDashboard.putNumber("Left Wheel", leftDrive.get());
-    SmartDashboard.putNumber("Right Wheel", rightDrive.get());
+    //SmartDashboard.putNumber("Left Wheel", leftDrive.get());
+    //SmartDashboard.putNumber("Right Wheel", rightDrive.get());
   }
 
   /**

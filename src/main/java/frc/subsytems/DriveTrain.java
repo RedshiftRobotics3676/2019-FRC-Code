@@ -30,7 +30,7 @@ public class DriveTrain extends Subsystem
 
     d.setSafetyEnabled(false);
 
-    Robot.logNumber("DriveTrain", 1);
+    //Robot.logNumber("DriveTrain", 1);
   }
 
   public void drive(Joystick stick)
@@ -44,11 +44,23 @@ public class DriveTrain extends Subsystem
     rightMaster.set(ControlMode.PercentOutput, 0);
   }
 
+  //Command Called by TurnToAngle usePIDOutput(double output)
+  //Runs Motors in opposite directions at PID written speed
   public void turn(double input)
   {
     leftMaster.set(ControlMode.PercentOutput, input);
     rightMaster.set(ControlMode.PercentOutput, input);
   }
+
+  public WPI_TalonSRX getTalonLeft()
+  {
+    return this.leftMaster;
+  } 
+
+  public WPI_TalonSRX getTalonRight()
+  {
+    return this.rightMaster;
+  } 
 
   @Override
   public void initDefaultCommand() {

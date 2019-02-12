@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.commands.ElevatorMove;
 import frc.commands.TurnToAngle;
 //import frc.commands.TurnToAngle;
 import frc.subsytems.DriveTrain;
@@ -30,13 +31,21 @@ import frc.subsytems.DriveTrain;
  */
 public class OI
 {
-  Button a;
+  Button a, b;
 
   public OI()
   {
     a = new JoystickButton(stick, 1);
+    b = new JoystickButton(stick, 2);
 
+    //TurnToAngle Command
+    //Pass the desired angle for the robot to turn to
+    //Press while turning in order to make it stop
     a.toggleWhenPressed(new TurnToAngle(90.0));
+
+    b.toggleWhenPressed(new ElevatorMove());
+
+    //a.toggleWhenPressed(new ElevatorMove());
   }
 
   private static Joystick stick = new Joystick(0);

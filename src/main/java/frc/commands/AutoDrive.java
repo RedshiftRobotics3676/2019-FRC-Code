@@ -15,17 +15,27 @@ import frc.robot.OI;
 import frc.robot.Robot;
 import com.kauailabs.navx.frc.*;
 
-public class Drive extends Command {
+public class AutoDrive extends PIDCommand {
 
-  public Drive() {
+  private AHRS navX;
+  private double distance;
+
+  public AutoDrive(double dist) {
+    super(Constants.kP, Constants.kI, Constants.kD, Constants.kF, Robot.kDriveTrain);
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
+    navX = Robot.getNavX();
     requires(Robot.kDriveTrain);
+    distance = dist;
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+        navX = Robot.getNavX();
+        getPIDController().setAbsoluteTolerance(1.0);
+        navX.zeroYaw();
+        setSetpoint(0.0);
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -38,7 +48,8 @@ public class Drive extends Command {
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    return Robot.kDriveTrain.getTalonLeft().getSelectedSensorPosition() >= distance ||
+           Robot.kDriveTrain.getTalonRight().getSelectedSensorPosition() >= distance;
   }
 
   // Called once after isFinished returns true
@@ -51,5 +62,15 @@ public class Drive extends Command {
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+  }
+
+  protected double returnPIDInput()
+  {
+    return navX.getYaw();
+  }
+
+  protected void usePIDOutput(double output)
+  {
+    Robot.kDriveTrain.turn(output);
   }
 }
