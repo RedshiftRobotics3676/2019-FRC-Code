@@ -14,36 +14,36 @@ import frc.robot.OI;
 import frc.robot.Robot;
 import com.kauailabs.navx.frc.*;
 
-public class Drive extends Command {
+public class ArmStop extends Command {
 
-  public Drive() {
+  public ArmStop() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(Robot.kDriveTrain);
+    requires(Robot.kArm);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    Robot.kArm.stop();
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.kDriveTrain.drive(OI.getJoystick());
-    //Robot.logNumber("Drive Value", OI.getJoystick().getRawAxis(1));
+    
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return false;
+    return true;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
-      Robot.kDriveTrain.stop();
+    Robot.kArm.stop();
   }
 
   // Called when another command which requires one or more of the same

@@ -10,7 +10,6 @@ package frc.commands;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.PIDCommand;
-import frc.robot.Constants;
 import frc.robot.OI;
 import frc.robot.Robot;
 import com.kauailabs.navx.frc.*;
@@ -20,7 +19,7 @@ public class NavDrive extends PIDCommand {
   private AHRS navX;
 
   public NavDrive() {
-    super(Constants.kP, Constants.kI, Constants.kD, Constants.kF, Robot.kDriveTrain);
+    super(0, 0, 0, 0, Robot.kDriveTrain);
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     navX = Robot.getNavX();

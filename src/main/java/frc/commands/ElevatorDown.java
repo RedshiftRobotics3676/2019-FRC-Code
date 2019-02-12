@@ -10,14 +10,13 @@ package frc.commands;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.PIDCommand;
-import frc.robot.Constants;
 import frc.robot.OI;
 import frc.robot.Robot;
 import com.kauailabs.navx.frc.*;
 
-public class ElevatorMove extends Command {
+public class ElevatorDown extends Command {
 
-  public ElevatorMove() {
+  public ElevatorDown() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.kElevator);

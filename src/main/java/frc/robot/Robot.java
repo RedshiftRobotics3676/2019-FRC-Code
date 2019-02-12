@@ -8,8 +8,10 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDOutput;
 import edu.wpi.first.wpilibj.PIDSource;
@@ -19,10 +21,14 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.commands.AutoCommand;
 import frc.commands.Drive;
-import frc.commands.ExampleCommand;
+import frc.commands.HatchGrab;
+import frc.subsytems.Arm;
 import frc.subsytems.DriveTrain;
 import frc.subsytems.Elevator;
+import frc.subsytems.HatchIntake;
+import frc.subsytems.Intake;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -39,9 +45,23 @@ public class Robot extends TimedRobot {
   WPI_TalonSRX leftDrive;
   WPI_TalonSRX rightDrive;
   WPI_TalonSRX eTalon;
+  WPI_TalonSRX aTalon;
+
+  WPI_VictorSPX leftFollow;
+  WPI_VictorSPX rightFollow;
+
+  WPI_VictorSPX eVictor;
+  WPI_VictorSPX aVictor;
+  WPI_VictorSPX iVictor;
+
+  DoubleSolenoid hsGrab;
+  DoubleSolenoid hsPunch;
 
   public static DriveTrain kDriveTrain;
   public static Elevator kElevator;
+  public static Arm kArm;
+  public static HatchIntake kHatch;
+  public static Intake kIntake;
 
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
@@ -53,14 +73,30 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    m_chooser.setDefaultOption("Default Option", new ExampleCommand());
+    m_chooser.setDefaultOption("Default Option", new AutoCommand());
 
-    leftDrive = new WPI_TalonSRX(1);
-    rightDrive = new WPI_TalonSRX(2);
-    eTalon = new WPI_TalonSRX(6);
+    leftDrive = new WPI_TalonSRX(RobotMap.L_TALON);
+    rightDrive = new WPI_TalonSRX(RobotMap.R_TALON);
 
-    kDriveTrain = new DriveTrain(leftDrive, rightDrive);
-    kElevator = new Elevator(eTalon);
+    leftFollow = new WPI_VictorSPX(RobotMap.L_VICTOR);
+    rightFollow = new WPI_VictorSPX(RobotMap.R_VICTOR);
+
+    eTalon = new WPI_TalonSRX(RobotMap.E_TALON);
+    aTalon = new WPI_TalonSRX(RobotMap.A_TALON);
+
+    eVictor = new WPI_VictorSPX(RobotMap.E_VICTOR);
+    aVictor = new WPI_VictorSPX(RobotMap.A_VICTOR);
+    iVictor = new WPI_VictorSPX(RobotMap.I_VICTOR);
+
+    //hsGrab = new DoubleSolenoid(RobotMap.G_SF, RobotMap.G_SR);
+    //hsPunch = new DoubleSolenoid(RobotMap.P_SF, RobotMap.P_SR);
+
+    kDriveTrain = new DriveTrain(leftDrive, rightDrive, leftFollow, rightFollow);
+    kElevator = new Elevator(eTalon, eVictor);
+    kArm = new Arm(aTalon, aVictor);
+    kIntake = new Intake(iVictor);
+
+    //kHatch = new HatchIntake(hsGrab, hsPunch);
 
     ahrs = new AHRS(SPI.Port.kMXP);
 

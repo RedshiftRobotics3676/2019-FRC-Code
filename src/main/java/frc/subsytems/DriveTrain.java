@@ -2,6 +2,7 @@ package frc.subsytems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Joystick;
@@ -17,16 +18,22 @@ public class DriveTrain extends Subsystem
 {
     DifferentialDrive d;
     WPI_TalonSRX leftMaster, rightMaster;
+    WPI_VictorSPX leftFollower, rightFollower;
     AHRS navX;
 
-  public DriveTrain(WPI_TalonSRX left, WPI_TalonSRX right)
+  public DriveTrain(WPI_TalonSRX left, WPI_TalonSRX right, WPI_VictorSPX lv, WPI_VictorSPX rv)
   {
     navX = Robot.getNavX();
 
     leftMaster = left;
     rightMaster = right;
+    leftFollower = lv;
+    rightFollower = rv;
 
     d = new DifferentialDrive(leftMaster, rightMaster);
+
+    leftFollower.follow(leftMaster);
+    rightFollower.follow(rightMaster);
 
     d.setSafetyEnabled(false);
 
@@ -35,7 +42,7 @@ public class DriveTrain extends Subsystem
 
   public void drive(Joystick stick)
   {
-    d.arcadeDrive(stick.getRawAxis(1), stick.getRawAxis(4)*-1, true);
+    d.arcadeDrive(stick.getRawAxis(1)*-1, stick.getRawAxis(4), true);
   }
 
   public void stop()

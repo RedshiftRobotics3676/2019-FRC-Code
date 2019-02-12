@@ -17,7 +17,14 @@ import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.commands.ElevatorMove;
+import frc.commands.ArmDown;
+import frc.commands.ArmStop;
+import frc.commands.ArmUp;
+import frc.commands.ElevatorDown;
+import frc.commands.ElevatorStop;
+import frc.commands.ElevatorUp;
+import frc.commands.HatchTest;
+//import frc.commands.Punch;
 import frc.commands.TurnToAngle;
 //import frc.commands.TurnToAngle;
 import frc.subsytems.DriveTrain;
@@ -31,21 +38,32 @@ import frc.subsytems.DriveTrain;
  */
 public class OI
 {
-  Button a, b;
+  Button a, b, x, y, lb, rb;
 
   public OI()
   {
     a = new JoystickButton(stick, 1);
     b = new JoystickButton(stick, 2);
+    x = new JoystickButton(stick, 3);
+    y = new JoystickButton(stick, 4);
+    lb = new JoystickButton(stick, 5);
+    rb = new JoystickButton(stick, 6);
 
     //TurnToAngle Command
     //Pass the desired angle for the robot to turn to
     //Press while turning in order to make it stop
-    a.toggleWhenPressed(new TurnToAngle(90.0));
+    //a.toggleWhenPressed(new TurnToAngle(90.0));
 
-    b.toggleWhenPressed(new ElevatorMove());
+    //y.toggleWhenPressed(new ArmUp());
+    //x.toggleWhenPressed(new ArmDown());
 
-    //a.toggleWhenPressed(new ElevatorMove());
+    //a.toggleWhenPressed(new HatchTest());
+
+    lb.whileHeld(new ElevatorUp());
+
+    y.whileHeld(new ArmUp());
+    y.whenReleased(new ArmStop());
+    //rb.whenPressed(new ElevatorStop());
   }
 
   private static Joystick stick = new Joystick(0);
