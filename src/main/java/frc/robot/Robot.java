@@ -11,6 +11,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDOutput;
@@ -57,6 +58,11 @@ public class Robot extends TimedRobot {
   DoubleSolenoid hsGrab;
   DoubleSolenoid hsPunch;
 
+  public static DigitalInput eTop;
+  public static DigitalInput eBot;
+  public static DigitalInput aTop;
+  public static DigitalInput aBot;
+
   public static DriveTrain kDriveTrain;
   public static Elevator kElevator;
   public static Arm kArm;
@@ -88,6 +94,11 @@ public class Robot extends TimedRobot {
     aVictor = new WPI_VictorSPX(RobotMap.A_VICTOR);
     iVictor = new WPI_VictorSPX(RobotMap.I_VICTOR);
 
+    eBot = new DigitalInput(1);
+    eTop = new DigitalInput(2);
+    aBot = new DigitalInput(3);
+    aTop = new DigitalInput(4);
+
     //hsGrab = new DoubleSolenoid(RobotMap.G_SF, RobotMap.G_SR);
     //hsPunch = new DoubleSolenoid(RobotMap.P_SF, RobotMap.P_SR);
 
@@ -116,6 +127,10 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    SmartDashboard.putBoolean("Elevator Top", eTop.get());
+    SmartDashboard.putBoolean("Elevator Down", eBot.get());
+    SmartDashboard.putBoolean("Arm Top", aTop.get());
+    SmartDashboard.putBoolean("Arm Down", aBot.get());
   }
 
 

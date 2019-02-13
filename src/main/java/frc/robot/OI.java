@@ -28,6 +28,7 @@ import frc.commands.HatchTest;
 import frc.commands.TurnToAngle;
 //import frc.commands.TurnToAngle;
 import frc.subsytems.DriveTrain;
+import frc.testcommands.ElevatorTest;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -54,16 +55,13 @@ public class OI
     //Press while turning in order to make it stop
     //a.toggleWhenPressed(new TurnToAngle(90.0));
 
-    //y.toggleWhenPressed(new ArmUp());
-    //x.toggleWhenPressed(new ArmDown());
+    //a.toggleWhenPressed(new ElevatorTest());
 
-    //a.toggleWhenPressed(new HatchTest());
+    //b.toggleWhenPressed(new ElevatorStop());
 
-    lb.whileHeld(new ElevatorUp());
-
-    y.whileHeld(new ArmUp());
-    y.whenReleased(new ArmStop());
-    //rb.whenPressed(new ElevatorStop());
+    //lb.whileHeld(new ElevatorUp());
+    //rb.whileHeld(new ElevatorDown());
+    
   }
 
   private static Joystick stick = new Joystick(0);

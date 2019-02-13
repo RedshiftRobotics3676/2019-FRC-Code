@@ -7,46 +7,27 @@
 
 package frc.commands;
 
-import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.PIDCommand;
 import frc.robot.OI;
 import frc.robot.Robot;
-import com.kauailabs.navx.frc.*;
 
-/** 
-NOTE: NOT WORKING
-NEED TO TUNE PID VALUES
-**/
-
-public class NavDrive extends PIDCommand {
-
-  private AHRS navX;
-
-  public NavDrive() {
-    super(0, 0, 0, 0, Robot.kDriveTrain);
+public class DriveMM extends Command {
+  public DriveMM() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    navX = Robot.getNavX();
     requires(Robot.kDriveTrain);
   }
 
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-        navX = Robot.getNavX();
-        getPIDController().setAbsoluteTolerance(1.0);
-        navX.zeroYaw();
-        setSetpoint(0.0);
+    Robot.kDriveTrain.MMInit();
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.kDriveTrain.drive(OI.getJoystick());
-    //Robot.logNumber("Drive Value", OI.getJoystick().getRawAxis(1));
-
-    
+    Robot.kDriveTrain.driveMM(OI.getJoystick());
   }
 
   // Make this return true when this Command no longer needs to run execute()
@@ -58,22 +39,13 @@ public class NavDrive extends PIDCommand {
   // Called once after isFinished returns true
   @Override
   protected void end() {
-   
+    Robot.kDriveTrain.stop();
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
-  }
-
-  protected double returnPIDInput()
-  {
-    return navX.getYaw();
-  }
-
-  protected void usePIDOutput(double output)
-  {
-    Robot.kDriveTrain.turn(output);
+    Robot.kDriveTrain.stop();
   }
 }

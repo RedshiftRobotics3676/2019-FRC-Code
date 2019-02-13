@@ -34,7 +34,7 @@ public class Elevator extends Subsystem
 
   public void up()
   {
-    eTalon.set(ControlMode.PercentOutput, -speed);
+    eTalon.set(ControlMode.Position, -speed);
   }
 
   public void down()
@@ -47,9 +47,15 @@ public class Elevator extends Subsystem
     eTalon.set(ControlMode.PercentOutput, 0.0);
   }
 
-  //Command Called by TurnToAngle usePIDOutput(double output)
-  //Runs Motors in opposite directions at PID written speed
-  
+  public void pos(double dist)
+  {
+    eTalon.set(ControlMode.Position, dist);
+  }  
+
+  public void magic()
+  {
+    
+  }
 
   @Override
   public void initDefaultCommand() {
