@@ -1,6 +1,0 @@
-title Sub-System X Test Sequence
-
-Robot->Sub-System X:CheckSystem()
-
-Sub-System X->Sub-System X:DoStuffToCheckSubSystem()
-Robot<--Sub-System X:SubSystemStatus(result)
