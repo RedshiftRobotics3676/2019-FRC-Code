@@ -7,12 +7,8 @@
 
 package frc.commands;
 
-import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.PIDCommand;
-import frc.robot.OI;
 import frc.robot.Robot;
-import com.kauailabs.navx.frc.*;
 
 public class ArmDown extends Command {
 
@@ -42,6 +38,7 @@ public class ArmDown extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
+    //Robot.kElevator.setEncoder(0);
     Robot.kArm.stop();
   }
 

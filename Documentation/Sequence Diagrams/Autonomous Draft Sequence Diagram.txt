@@ -1,0 +1,34 @@
+title Autonomous Draft Sequence Diagram
+
+AutoCommand<--Robot:autonomousPeriodic()
+
+box right of Drivetrain:Constants
+note right of Drivetrain:PID Values Set
+AutoCommand->Drivetrain:Drive(double distance)
+Drivetrain->TalonSRX:driveDist(double distance)
+TalonSRX->TalonSRX:set(ControlMode.MotionMagic, distance)
+Drivetrain<-TalonSRX:end()
+note left of Drivetrain:Drive isFinished() : distance driven
+AutoCommand<-Drivetrain:Drive isFinished()
+space
+AutoCommand->Drivetrain:Turn(double degrees)
+Drivetrain->TalonSRX:turn(double degrees)
+loop turning
+TalonSRX->navX:getYaw()
+end
+Drivetrain<-TalonSRX:end()
+note left of Drivetrain:Turn isFinished() : degrees reached
+AutoCommand<-Drivetrain:Turn isFinished()
+space
+AutoCommand->Drivetrain:Drive(double distance)
+Drivetrain->TalonSRX:driveDist(double distance)
+TalonSRX->TalonSRX:set(ControlMode.MotionMagic, distance)
+Drivetrain<-TalonSRX:end()
+note left of Drivetrain:Drive isFinished() : distance driven
+AutoCommand<-Drivetrain:Drive isFinished()
+space
+AutoCommand->Drivetrain:LineUp()
+space
+AutoCommand->AutoCommand:HatchRelease()
+
+Robot<-AutoCommand:teleopInit()

@@ -13,9 +13,9 @@ import edu.wpi.first.wpilibj.command.PIDCommand;
 import frc.robot.OI;
 import frc.robot.Robot;
 
-public class ArmUp extends Command {
+public class ArmStop extends Command {
 
-  public ArmUp() {
+  public ArmStop() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
     requires(Robot.kArm);
@@ -24,24 +24,24 @@ public class ArmUp extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    Robot.kArm.stop();
   }
 
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.kArm.up();
+    
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return !Robot.aTop.get();
+    return false;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    //Robot.kElevator.setEncoder();
     Robot.kArm.stop();
   }
 

@@ -1,8 +1,6 @@
 package frc.testcommands;
 
 import edu.wpi.first.wpilibj.command.CommandGroup;
-import frc.commands.ArmDown;
-import frc.commands.ArmUp;
 import frc.commands.ElevatorDown;
 import frc.commands.ElevatorUp;
 

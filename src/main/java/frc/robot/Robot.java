@@ -7,25 +7,23 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-import com.kauailabs.navx.frc.AHRS;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
-import edu.wpi.first.wpilibj.PIDController;
-import edu.wpi.first.wpilibj.PIDOutput;
-import edu.wpi.first.wpilibj.PIDSource;
-import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.commands.AutoCommand;
-import frc.commands.Drive;
-import frc.commands.HatchGrab;
-import frc.subsytems.Arm;
+import frc.commands.*;
+import frc.subsytems.*;
 import frc.subsytems.DriveTrain;
 import frc.subsytems.Elevator;
 import frc.subsytems.HatchIntake;
@@ -41,10 +39,9 @@ import frc.subsytems.Intake;
 public class Robot extends TimedRobot {
   public static OI oi;
 
-  public static AHRS ahrs;
 
-  WPI_TalonSRX leftDrive;
-  WPI_TalonSRX rightDrive;
+  public static WPI_TalonSRX leftDrive;
+  public static WPI_TalonSRX rightDrive;
   WPI_TalonSRX eTalon;
   WPI_TalonSRX aTalon;
 
@@ -62,6 +59,7 @@ public class Robot extends TimedRobot {
   public static DigitalInput eBot;
   public static DigitalInput aTop;
   public static DigitalInput aBot;
+  public static DigitalInput iSwitch;
 
   public static DriveTrain kDriveTrain;
   public static Elevator kElevator;
@@ -69,10 +67,19 @@ public class Robot extends TimedRobot {
   public static HatchIntake kHatch;
   public static Intake kIntake;
 
+  
+  public static Compressor compressor;
+
+
+  public static Subsystem kVisionProcessingServer;
+
+
   private static final String kDefaultAuto = "Default";
   private static final String kCustomAuto = "My Auto";
   Command m_autoSelected;
   private final SendableChooser<Command> m_chooser = new SendableChooser<>();
+ 
+  int _timesInMotionMagic;
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
@@ -89,30 +96,55 @@ public class Robot extends TimedRobot {
 
     eTalon = new WPI_TalonSRX(RobotMap.E_TALON);
     aTalon = new WPI_TalonSRX(RobotMap.A_TALON);
+    
 
     eVictor = new WPI_VictorSPX(RobotMap.E_VICTOR);
     aVictor = new WPI_VictorSPX(RobotMap.A_VICTOR);
     iVictor = new WPI_VictorSPX(RobotMap.I_VICTOR);
 
+    aTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+    eTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+
     eBot = new DigitalInput(1);
-    eTop = new DigitalInput(2);
+    eTop = new DigitalInput(0);
     aBot = new DigitalInput(3);
     aTop = new DigitalInput(4);
+    iSwitch = new DigitalInput(5);
 
-    //hsGrab = new DoubleSolenoid(RobotMap.G_SF, RobotMap.G_SR);
-    //hsPunch = new DoubleSolenoid(RobotMap.P_SF, RobotMap.P_SR);
+    hsGrab = new DoubleSolenoid(RobotMap.G_SF, RobotMap.G_SR);
+    hsPunch = new DoubleSolenoid(RobotMap.P_SF, RobotMap.P_SR);
 
     kDriveTrain = new DriveTrain(leftDrive, rightDrive, leftFollow, rightFollow);
     kElevator = new Elevator(eTalon, eVictor);
     kArm = new Arm(aTalon, aVictor);
     kIntake = new Intake(iVictor);
 
-    //kHatch = new HatchIntake(hsGrab, hsPunch);
+    compressor = new Compressor();
 
-    ahrs = new AHRS(SPI.Port.kMXP);
+    compressor.setClosedLoopControl(true);
+    //compressor.stop();
+
+    kHatch = new HatchIntake(hsGrab, hsPunch);
+
 
     oi = new OI();
+
+    _timesInMotionMagic = 0;
     
+    rightDrive.setSensorPhase(false);
+    rightDrive.setInverted(false);
+    
+    leftDrive.setSensorPhase(true);
+    leftDrive.setInverted(false);
+
+    aTalon.setInverted(false);
+    aVictor.setInverted(false);
+
+    iVictor.setInverted(false);
+    eTalon.configNeutralDeadband(0);
+    eVictor.configNeutralDeadband(0);
+    
+
     //SmartDashboard.putNumber("Left Wheel", leftDrive.get());
     //SmartDashboard.putNumber("Right Wheel", rightDrive.get());
   }
@@ -127,10 +159,38 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    /*
     SmartDashboard.putBoolean("Elevator Top", eTop.get());
     SmartDashboard.putBoolean("Elevator Down", eBot.get());
     SmartDashboard.putBoolean("Arm Top", aTop.get());
     SmartDashboard.putBoolean("Arm Down", aBot.get());
+    SmartDashboard.putBoolean("Intake Switch", iSwitch.get());
+    //SmartDashboard.putNumber("Arm Encoder", aTalon.getSelectedSensorPosition());
+    //SmartDashboard.putNumber("Elevator Encoder", eTalon.getSelectedSensorPosition());
+    SmartDashboard.putNumber("Encoder Value", VisionDriving.e);
+    */
+    //cool stuff
+    //SmartDashboard.putNumber("SensorVel", leftDrive.getSelectedSensorVelocity(0));
+		//SmartDashboard.putNumber("SensorPos", leftDrive.getSelectedSensorPosition(0));
+		//SmartDashboard.putNumber("MotorOutputPercent", leftDrive.getMotorOutputPercent());
+    //SmartDashboard.putNumber("ClosedLoopError", leftDrive.getClosedLoopError(0));
+    //SmartDashboard.putNumber("ActTrajPosition", leftDrive.getActiveTrajectoryPosition());
+    
+    /*
+    if (leftDrive.getControlMode() == ControlMode.MotionMagic) {
+			++_timesInMotionMagic;
+		} else {
+			_timesInMotionMagic = 0;
+		}
+    */
+    /*
+		if (_timesInMotionMagic > 10) {
+			/* Print the Active Trajectory Point Motion Magic is servoing towards */
+			/*SmartDashboard.putNumber("ClosedLoopTarget", leftDrive.getClosedLoopTarget(0));
+    		SmartDashboard.putNumber("ActTrajVelocity", leftDrive.getActiveTrajectoryVelocity());
+    		
+    }
+    */
   }
 
 
@@ -192,13 +252,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void testPeriodic() {
-    
+    rightDrive.set(ControlMode.PercentOutput, OI.getJoystick().getRawAxis(1));
   }
 
-  public static AHRS getNavX()
-  {
-    return ahrs;
-  }
 
   public static void logNumber(String name, double value)
   {

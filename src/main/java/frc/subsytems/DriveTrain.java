@@ -4,7 +4,6 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PIDController;
@@ -21,11 +20,10 @@ public class DriveTrain extends Subsystem
     DifferentialDrive d;
     WPI_TalonSRX leftMaster, rightMaster;
     WPI_VictorSPX leftFollower, rightFollower;
-    AHRS navX;
+    final double speed = .6;
 
   public DriveTrain(WPI_TalonSRX left, WPI_TalonSRX right, WPI_VictorSPX lv, WPI_VictorSPX rv)
   {
-    navX = Robot.getNavX();
 
     leftMaster = left;
     rightMaster = right;
@@ -44,12 +42,18 @@ public class DriveTrain extends Subsystem
 
   public void drive(Joystick stick)
   {
-    d.arcadeDrive(stick.getRawAxis(1)*-1, stick.getRawAxis(4), true);
+    d.arcadeDrive(stick.getRawAxis(1)*-1*speed, stick.getRawAxis(2)*speed, true);
   }
 
-  public void driveMM(Joystick stick)
+  public void drive2(double left, double right){
+    leftMaster.set(left);
+    rightMaster.set(right);
+  }
+
+  public void driveMM(Joystick stick, double dist)
   {
-    leftMaster.set(ControlMode.MotionMagic, 80000);
+    leftMaster.set(ControlMode.MotionMagic, dist);
+    rightMaster.set(ControlMode.MotionMagic, dist);
   }
 
   public void stop()
@@ -80,20 +84,50 @@ public class DriveTrain extends Subsystem
   {
     leftMaster.configFactoryDefault();
     leftMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-    leftMaster.setSensorPhase(true);
     leftMaster.setSelectedSensorPosition(0, 0, 200);
+    leftMaster.configNominalOutputForward(0);
+    leftMaster.configNominalOutputReverse(0);
+    leftMaster.configPeakOutputForward(1);
+    leftMaster.configPeakOutputReverse(-1);
+    leftMaster.configNeutralDeadband(.05);
+    //leftMaster.configVoltageCompSaturation(0.5);
+    //leftMaster.enableVoltageCompensation(true);
     leftMaster.configMotionCruiseVelocity(1960);
     leftMaster.configMotionAcceleration(1960);
+    //leftMaster.configAllowableClosedloopError(slotIdx, allowableCloseLoopError, timeoutMs)
 
-    leftMaster.config_kD(0, 0);
-    leftMaster.config_kI(0, 0);
-    leftMaster.config_kP(0, .785);    
-    leftMaster.config_kF(0, .261);
+    leftMaster.config_kD(0, .003); //.003
+    //leftMaster.config_IntegralZone(0, 50);
+    leftMaster.config_kI(0, .00033); //.00033
+    leftMaster.config_kP(0, .3);//.3
+    leftMaster.config_kF(0, .261);//.261
+    /*
+    rightMaster.configFactoryDefault();
+    rightMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+    
+    rightMaster.setSelectedSensorPosition(0, 1, 200);
+    rightMaster.configNominalOutputForward(0);
+    rightMaster.configNominalOutputReverse(0);
+    rightMaster.configPeakOutputForward(1);
+    rightMaster.configPeakOutputReverse(-1);
+    rightMaster.configNeutralDeadband(.05);
+    //rightMaster.configVoltageCompSaturation(0.5);
+    //rightMaster.enableVoltageCompensation(true);
+    rightMaster.configMotionCruiseVelocity(1960);
+    rightMaster.configMotionAcceleration(1960);
+    //rightMaster.configAllowableClosedloopError(slotIdx, allowableCloseLoopError, timeoutMs)
+
+    rightMaster.config_kD(1, .003); //.003
+    //rightMaster.config_IntegralZone(0, 50);
+    rightMaster.config_kI(1, .00033); //.00033
+    rightMaster.config_kP(1, .3);//.3
+    rightMaster.config_kF(1, .261);//.261
+    */
   }
 
   @Override
   public void initDefaultCommand() {
-    setDefaultCommand(new DriveMM());
+    setDefaultCommand(new Drive());
     // Set the default command for a subsystem here.
     // setDefaultCommand(new MySpecialCommand());
   }

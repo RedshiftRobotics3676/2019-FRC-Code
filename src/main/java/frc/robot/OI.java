@@ -7,39 +7,15 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.kauailabs.navx.frc.AHRS;
-
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.buttons.Button;
 import edu.wpi.first.wpilibj.buttons.JoystickButton;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.commands.ArmDown;
-import frc.commands.ArmStop;
-import frc.commands.ArmUp;
-import frc.commands.ElevatorDown;
-import frc.commands.ElevatorStop;
-import frc.commands.ElevatorUp;
-import frc.commands.HatchTest;
-//import frc.commands.Punch;
-import frc.commands.TurnToAngle;
-//import frc.commands.TurnToAngle;
-import frc.subsytems.DriveTrain;
-import frc.testcommands.ElevatorTest;
+import frc.commands.*;
 
-/**
- * The VM is configured to automatically run this class, and to call the
- * functions corresponding to each mode, as described in the TimedRobot
- * documentation. If you change the name of this class or the package after
- * creating this project, you must also update the build.gradle file in the
- * project.
- */
 public class OI
 {
-  Button a, b, x, y, lb, rb;
+  Button a, b, x, y, lb, rb, start, back;
+  Button a2, b2, x2, y2, lb2, rb2, start2, back2, lt2, rt2;
 
   public OI()
   {
@@ -49,6 +25,19 @@ public class OI
     y = new JoystickButton(stick, 4);
     lb = new JoystickButton(stick, 5);
     rb = new JoystickButton(stick, 6);
+    back = new JoystickButton(stick, 7);
+    start = new JoystickButton(stick, 8);
+
+    a2 = new JoystickButton(stick2, 2);
+    b2 = new JoystickButton(stick2, 3);
+    x2 = new JoystickButton(stick2, 1);
+    y2 = new JoystickButton(stick2, 4); 
+    lb2 = new JoystickButton(stick2, 5);
+    rb2 = new JoystickButton(stick2, 6);
+    //back2 = new JoystickButton(stick2, 7);
+    //start2 = new JoystickButton(stick2, 8);
+    lt2 = new JoystickButton(stick2, 7);
+    rt2 = new JoystickButton(stick2, 8);
 
     //TurnToAngle Command
     //Pass the desired angle for the robot to turn to
@@ -59,15 +48,30 @@ public class OI
 
     //b.toggleWhenPressed(new ElevatorStop());
 
-    //lb.whileHeld(new ElevatorUp());
-    //rb.whileHeld(new ElevatorDown());
+    
+    lb2.whileHeld(new ArmUp());
+    lt2.whileHeld(new ArmDown());
+    y2.whenPressed(new ArmStop());
+    
+    a.whenPressed(new ElevatorUp());
+    b.whenPressed(new ElevatorDown());
+    x.whenPressed(new ElevatorHold());
+
+    rb2.toggleWhenPressed(new Inhale());
+    rt2.toggleWhenPressed(new Exhale());
+
+    x2.toggleWhenPressed(new HatchGrab());
+    a2.whileHeld(new HatchPunch());
+    //x.toggleWhenPressed(new VisionDriving());
     
   }
 
-  private static Joystick stick = new Joystick(0);
+  private static Joystick stick = new Joystick(0); //xbox
+  private static Joystick stick2 = new Joystick(1);//logitech
 
   public static Joystick getJoystick()
   {
-    return stick;
+    return stick2;
   }
+
 }

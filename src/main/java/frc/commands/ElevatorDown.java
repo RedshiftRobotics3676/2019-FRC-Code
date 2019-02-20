@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.PIDCommand;
 import frc.robot.OI;
 import frc.robot.Robot;
-import com.kauailabs.navx.frc.*;
 
 public class ElevatorDown extends Command {
 
@@ -42,12 +41,15 @@ public class ElevatorDown extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.kElevator.stop();
+    //Robot.kElevator.setEncoder(0);
+    Robot.kElevator.hold();
   }
 
   // Called when another command which requires one or more of the same
   // subsystems is scheduled to run
   @Override
   protected void interrupted() {
+    Robot.kElevator.hold();
   }
+
 }

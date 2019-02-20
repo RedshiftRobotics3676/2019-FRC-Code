@@ -7,18 +7,14 @@
 
 package frc.commands;
 
-import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.command.PIDCommand;
-import frc.robot.OI;
 import frc.robot.Robot;
 
-public class ArmUp extends Command {
-
-  public ArmUp() {
+public class ElevatorHold extends Command {
+  public ElevatorHold() {
     // Use requires() here to declare subsystem dependencies
     // eg. requires(chassis);
-    requires(Robot.kArm);
+    requires(Robot.kElevator);
   }
 
   // Called just before this Command runs the first time
@@ -29,20 +25,18 @@ public class ArmUp extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.kArm.up();
+    Robot.kElevator.hold();
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return !Robot.aTop.get();
+    return false;
   }
 
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    //Robot.kElevator.setEncoder();
-    Robot.kArm.stop();
   }
 
   // Called when another command which requires one or more of the same
