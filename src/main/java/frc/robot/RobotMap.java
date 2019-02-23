@@ -33,8 +33,8 @@ public class RobotMap
     //Intake
     public static final int I_VICTOR = 10;
 
-    public static final int G_SF = 1;
-    public static final int G_SR = 0;
-    public static final int P_SF = 2;
-    public static final int P_SR = 3;
+    public static final int G_SF = 0;
+    public static final int G_SR = 1;
+    public static final int P_SF = 3;
+    public static final int P_SR = 2;
 }

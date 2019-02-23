@@ -42,8 +42,8 @@ public class Robot extends TimedRobot {
 
   public static WPI_TalonSRX leftDrive;
   public static WPI_TalonSRX rightDrive;
-  WPI_TalonSRX eTalon;
-  WPI_TalonSRX aTalon;
+  public static WPI_TalonSRX eTalon;
+  public static WPI_TalonSRX aTalon;
 
   WPI_VictorSPX leftFollow;
   WPI_VictorSPX rightFollow;
@@ -120,7 +120,7 @@ public class Robot extends TimedRobot {
     kIntake = new Intake(iVictor);
 
     compressor = new Compressor();
-
+    //compressor.start();
     compressor.setClosedLoopControl(true);
     //compressor.stop();
 
@@ -138,6 +138,7 @@ public class Robot extends TimedRobot {
     leftDrive.setInverted(false);
 
     aTalon.setInverted(false);
+    aTalon.setSensorPhase(true);
     aVictor.setInverted(false);
 
     iVictor.setInverted(false);
@@ -159,11 +160,22 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    /*
+    
+    //reset arm to zero at top
+    if(!aTop.get() && aTalon.getSelectedSensorPosition() != 0)
+      aTalon.setSelectedSensorPosition(0);
+
+    //reset elevator to zero at bottom
+    if(!eBot.get() && eTalon.getSelectedSensorPosition() != 0)
+      eTalon.setSelectedSensorPosition(0);
+
+    SmartDashboard.putNumber("Elevator Position", eTalon.getSelectedSensorPosition());
+    SmartDashboard.putNumber("Arm Position", aTalon.getSelectedSensorPosition());
     SmartDashboard.putBoolean("Elevator Top", eTop.get());
     SmartDashboard.putBoolean("Elevator Down", eBot.get());
     SmartDashboard.putBoolean("Arm Top", aTop.get());
     SmartDashboard.putBoolean("Arm Down", aBot.get());
+    /*
     SmartDashboard.putBoolean("Intake Switch", iSwitch.get());
     //SmartDashboard.putNumber("Arm Encoder", aTalon.getSelectedSensorPosition());
     //SmartDashboard.putNumber("Elevator Encoder", eTalon.getSelectedSensorPosition());
@@ -196,7 +208,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
-    
   }
 
   @Override
@@ -246,13 +257,17 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
   }
-
+  int i = 0;
   /**
    * This function is called periodically during test mode.
    */
   @Override
   public void testPeriodic() {
-    rightDrive.set(ControlMode.PercentOutput, OI.getJoystick().getRawAxis(1));
+    if(i >= 50){
+      System.out.printf("%d\n",oi.getJoystick(0).getPOV(0));
+      i = 0;
+    }
+    i++;
   }
 
 

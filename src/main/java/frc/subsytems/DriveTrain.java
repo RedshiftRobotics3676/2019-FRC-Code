@@ -20,7 +20,7 @@ public class DriveTrain extends Subsystem
     DifferentialDrive d;
     WPI_TalonSRX leftMaster, rightMaster;
     WPI_VictorSPX leftFollower, rightFollower;
-    final double speed = .6;
+    final double speed = .7;
 
   public DriveTrain(WPI_TalonSRX left, WPI_TalonSRX right, WPI_VictorSPX lv, WPI_VictorSPX rv)
   {

@@ -25,6 +25,18 @@ public class HatchGrab extends Command {
   @Override
   protected void initialize() {
     Robot.kHatch.grab();
+    /*
+    System.out.printf("CLC: %s CC: %s CCTH: %s CNCF: %s CNCSF: %s CSF: %s CSSF: %s PSV : %s", 
+                                     Robot.compressor.getClosedLoopControl(), 
+                                     Robot.compressor.getCompressorCurrent(), 
+                                     Robot.compressor.getCompressorCurrentTooHighFault(), 
+                                     Robot.compressor.getCompressorNotConnectedFault(),
+                                     Robot.compressor.getCompressorNotConnectedStickyFault(),
+                                     Robot.compressor.getCompressorShortedFault(),
+                                     Robot.compressor.getCompressorShortedStickyFault(),
+                                     Robot.compressor.getPressureSwitchValue());*/
+
+    //System.out.println("grab");
   }
 
   // Called repeatedly when this Command is scheduled to run
@@ -43,6 +55,18 @@ public class HatchGrab extends Command {
   @Override
   protected void end() {
     Robot.kHatch.grabberStop();
+    /*
+    System.out.printf("CLC: %s CC: %s CCTH: %s CNCF: %s CNCSF: %s CSF: %s CSSF: %s PSV : %s", 
+                                     Robot.compressor.getClosedLoopControl(), 
+                                     Robot.compressor.getCompressorCurrent(), 
+                                     Robot.compressor.getCompressorCurrentTooHighFault(), 
+                                     Robot.compressor.getCompressorNotConnectedFault(),
+                                     Robot.compressor.getCompressorNotConnectedStickyFault(),
+                                     Robot.compressor.getCompressorShortedFault(),
+                                     Robot.compressor.getCompressorShortedStickyFault(),
+                                     Robot.compressor.getPressureSwitchValue());
+                                     */
+    //System.out.println("stop");
   }
 
   // Called when another command which requires one or more of the same

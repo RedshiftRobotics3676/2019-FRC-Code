@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 public class Intake extends Subsystem
 {
     WPI_VictorSPX iVictor;
-    private static final double speed = 0.5;
+    private static final double speed = .7;
 
   public Intake(WPI_VictorSPX victor)
   {
