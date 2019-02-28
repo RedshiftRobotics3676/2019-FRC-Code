@@ -185,9 +185,9 @@ public class Robot extends TimedRobot {
     if(!eTop.get() && eTalon.getSelectedSensorPosition() > 19000)
       eTalon.setSelectedSensorPosition(19542);
 
-    SmartDashboard.putNumber("Elevator Position", eTalon.getSelectedSensorPosition());
+    //SmartDashboard.putNumber("Elevator Position", eTalon.getSelectedSensorPosition());
     //SmartDashboard.putNumber("target position", kElevator.getPos());
-    SmartDashboard.putNumber("Arm Position", aTalon.getSelectedSensorPosition());
+    //SmartDashboard.putNumber("Arm Position", aTalon.getSelectedSensorPosition());
     //SmartDashboard.putBoolean("Elevator Top", eTop.get());
     //SmartDashboard.putBoolean("Elevator Down", eBot.get());
     //SmartDashboard.putBoolean("Arm Top", aTop.get());
@@ -275,11 +275,6 @@ public class Robot extends TimedRobot {
     Scheduler.getInstance().run();
 
     //Limit Switch Testing
-    SmartDashboard.putBoolean("Elevator Top", eTop.get());
-    SmartDashboard.putBoolean("Elevator Bot", eBot.get());
-    SmartDashboard.putBoolean("Arm Top", aTop.get());
-    SmartDashboard.putBoolean("Arm Bot", aBot.get());
-    SmartDashboard.putBoolean("Intake", iSwitch.get());
   }
   int i = 0;
   /**
@@ -297,6 +292,6 @@ public class Robot extends TimedRobot {
 
   public static void logNumber(String name, double value)
   {
-      SmartDashboard.putNumber(name, value);
+      //SmartDashboard.putNumber(name, value);
   }
 }
