@@ -12,8 +12,8 @@ public class Arm extends Subsystem
 {
     WPI_TalonSRX aTalon;
     WPI_VictorSPX aVictor;
-    private static final double speed = 0.3;
-    private static final double hSpeed = .07;
+    private static final double speed = 0.4;
+    private static final double hSpeed = .05;
     private static int pos, cPos;
 
   public Arm(WPI_TalonSRX talon, WPI_VictorSPX victor)
@@ -39,8 +39,8 @@ public class Arm extends Subsystem
 
   public void down()
   {
-    aTalon.set(ControlMode.PercentOutput, -.2/3);
-    aVictor.set(ControlMode.PercentOutput, .2/3);
+    aTalon.set(ControlMode.PercentOutput, -speed);
+    aVictor.set(ControlMode.PercentOutput, speed);
   }
 
   public void hold()

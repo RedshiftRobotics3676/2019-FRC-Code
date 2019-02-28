@@ -54,7 +54,9 @@ public class HatchGrab extends Command {
   // Called once after isFinished returns true
   @Override
   protected void end() {
-    Robot.kHatch.grabberStop();
+    //Robot.kHatch.grabberStop();
+    //Robot.kHatch.punchAndRelease();
+    //Robot.kHatch.puncherStop();
     /*
     System.out.printf("CLC: %s CC: %s CCTH: %s CNCF: %s CNCSF: %s CSF: %s CSSF: %s PSV : %s", 
                                      Robot.compressor.getClosedLoopControl(), 

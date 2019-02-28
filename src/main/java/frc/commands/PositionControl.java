@@ -8,6 +8,7 @@
 package frc.commands;
 
 import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Robot;
 
 public class PositionControl extends Command {
@@ -28,6 +29,7 @@ public class PositionControl extends Command {
   protected void initialize() {
     Robot.kArm.setPosition(mode);
     Robot.kElevator.setPosition(mode);
+    //System.out.println(Robot.kElevator.getPos());
   }
 
   // Called repeatedly when this Command is scheduled to run

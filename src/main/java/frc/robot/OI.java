@@ -52,11 +52,11 @@ public class OI
     //b.toggleWhenPressed(new ElevatorStop());
 
     
-    /*lb2.whileHeld(new ArmUp());
+    lb2.whileHeld(new ArmUp());
     lt2.whileHeld(new ArmDown());
     y2.whenPressed(new ArmStop());
-    */
-    /*a.whenPressed(new ElevatorUp());
+    /*
+    a.whenPressed(new ElevatorUp());
     b.whenPressed(new ElevatorDown());
     x.whenPressed(new ElevatorHold());
     */
@@ -64,7 +64,7 @@ public class OI
     rb2.whileHeld(new Inhale());
     rt2.whileHeld(new Exhale());
     
-    x2.toggleWhenPressed(new HatchGrab());
+    x2.whenPressed(new HatchGrab());
     a2.whileHeld(new OnePunch());
     //start2.toggleWhenPressed(new VisionDriving());
     
@@ -82,6 +82,18 @@ public class OI
     b.whenPressed(new PositionControl(6));
     a.whenPressed(new PositionControl(7));
     y.whenPressed(new PositionControl(8));
+
+    rb.whenPressed(new PositionControl(4));
+    lb.whenPressed(new PositionControl(3));
+    start.whenPressed(new PositionControl(2));
+    back.whenPressed(new PositionControl(1));
+
+    start2.whileHeld(new ElevatorUp());
+    back2.whileHeld(new ElevatorDown());
+    //back.whenPressed(new ElevatorHold());
+    
+    /*rb.whileHeld(new ArmUp());
+    lb.whileHeld(new ArmDown());*/
   }
 
   public Joystick getJoystick(int i)

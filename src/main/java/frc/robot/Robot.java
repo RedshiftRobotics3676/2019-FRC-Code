@@ -12,6 +12,11 @@ import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -69,9 +74,9 @@ public class Robot extends TimedRobot {
 
   
   public static Compressor compressor;
+  public static UsbCamera cam0;
 
-
-  public static Subsystem kVisionProcessingServer;
+  //public static VisionProcessingServer kVisionProcessingServer;
 
 
   private static final String kDefaultAuto = "Default";
@@ -118,6 +123,7 @@ public class Robot extends TimedRobot {
     kElevator = new Elevator(eTalon, eVictor);
     kArm = new Arm(aTalon, aVictor);
     kIntake = new Intake(iVictor);
+    //kVisionProcessingServer = new VisionProcessingServer();
 
     compressor = new Compressor();
     //compressor.start();
@@ -126,6 +132,7 @@ public class Robot extends TimedRobot {
 
     kHatch = new HatchIntake(hsGrab, hsPunch);
 
+    cam0 = CameraServer.getInstance().startAutomaticCapture();
 
     oi = new OI();
 
@@ -145,6 +152,7 @@ public class Robot extends TimedRobot {
     eTalon.configNeutralDeadband(0);
     eVictor.configNeutralDeadband(0);
     
+    //VisionProcessingServer.pipeline.setNumber(3);
 
     //SmartDashboard.putNumber("Left Wheel", leftDrive.get());
     //SmartDashboard.putNumber("Right Wheel", rightDrive.get());
@@ -165,16 +173,25 @@ public class Robot extends TimedRobot {
     if(!aTop.get() && aTalon.getSelectedSensorPosition() != 0)
       aTalon.setSelectedSensorPosition(0);
 
-    //reset elevator to zero at bottom
+    //reset arm to max at bot
+    if(!aBot.get() && aTalon.getSelectedSensorPosition() > 3000)
+      aTalon.setSelectedSensorPosition(3336);
+
+    //reset elevator to zero at bot
     if(!eBot.get() && eTalon.getSelectedSensorPosition() != 0)
       eTalon.setSelectedSensorPosition(0);
 
+    //reset elevator to max at top
+    if(!eTop.get() && eTalon.getSelectedSensorPosition() > 19000)
+      eTalon.setSelectedSensorPosition(19542);
+
     SmartDashboard.putNumber("Elevator Position", eTalon.getSelectedSensorPosition());
+    //SmartDashboard.putNumber("target position", kElevator.getPos());
     SmartDashboard.putNumber("Arm Position", aTalon.getSelectedSensorPosition());
-    SmartDashboard.putBoolean("Elevator Top", eTop.get());
-    SmartDashboard.putBoolean("Elevator Down", eBot.get());
-    SmartDashboard.putBoolean("Arm Top", aTop.get());
-    SmartDashboard.putBoolean("Arm Down", aBot.get());
+    //SmartDashboard.putBoolean("Elevator Top", eTop.get());
+    //SmartDashboard.putBoolean("Elevator Down", eBot.get());
+    //SmartDashboard.putBoolean("Arm Top", aTop.get());
+    //SmartDashboard.putBoolean("Arm Down", aBot.get());
     /*
     SmartDashboard.putBoolean("Intake Switch", iSwitch.get());
     //SmartDashboard.putNumber("Arm Encoder", aTalon.getSelectedSensorPosition());
@@ -256,6 +273,13 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
+
+    //Limit Switch Testing
+    SmartDashboard.putBoolean("Elevator Top", eTop.get());
+    SmartDashboard.putBoolean("Elevator Bot", eBot.get());
+    SmartDashboard.putBoolean("Arm Top", aTop.get());
+    SmartDashboard.putBoolean("Arm Bot", aBot.get());
+    SmartDashboard.putBoolean("Intake", iSwitch.get());
   }
   int i = 0;
   /**
@@ -264,7 +288,7 @@ public class Robot extends TimedRobot {
   @Override
   public void testPeriodic() {
     if(i >= 50){
-      System.out.printf("%d\n",oi.getJoystick(0).getPOV(0));
+      //System.out.printf("%d\n",oi.getJoystick(0).getPOV(0));
       i = 0;
     }
     i++;

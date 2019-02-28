@@ -19,8 +19,8 @@ public class Elevator extends Subsystem
 {
     WPI_TalonSRX eTalon;
     WPI_VictorSPX eVictor;
-    public static final double dSpeed = .1;
-    public static final double uSpeed = .3;
+    public static final double dSpeed = .2;
+    public static final double uSpeed = .4;
     public static final double hSpeed = .05;
 
     public static final double Kp = 0.01;
@@ -41,7 +41,8 @@ public class Elevator extends Subsystem
     eVictor.setInverted(false);
     eVictor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
 
-    pos = cPos = Robot.eTalon.getSelectedSensorPosition();
+    pos = 0;
+    cPos = Robot.eTalon.getSelectedSensorPosition();
 
     //eTalon.setSafetyEnabled(false);
     //eTalon.config_kD(slotIdx, value);
