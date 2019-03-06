@@ -26,6 +26,7 @@ public class PositionControl extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
+    
     Robot.kArm.setPosition(mode);
     Robot.kElevator.setPosition(mode);
     //System.out.println(Robot.kElevator.getPos());
@@ -42,6 +43,7 @@ public class PositionControl extends Command {
   @Override
   protected boolean isFinished() {
     return Robot.kArm.done() && Robot.kElevator.done();
+    //return false;
   }
 
   // Called once after isFinished returns true

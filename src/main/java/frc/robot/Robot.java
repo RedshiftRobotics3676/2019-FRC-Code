@@ -7,27 +7,28 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
+//import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
+//import edu.wpi.first.networktables.NetworkTable;
+//import edu.wpi.first.networktables.NetworkTableEntry;
+//import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
-import edu.wpi.first.wpilibj.command.Subsystem;
+//import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.commands.AutoCommand;
-import frc.commands.*;
+import frc.commands.VisionDriving;
+//import frc.commands.*;
 import frc.subsytems.*;
 import frc.subsytems.DriveTrain;
 import frc.subsytems.Elevator;
@@ -76,22 +77,22 @@ public class Robot extends TimedRobot {
   public static Compressor compressor;
   public static UsbCamera cam0;
 
-  //public static VisionProcessingServer kVisionProcessingServer;
+  public static VisionProcessingServer kVisionProcessingServer;
 
 
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
-  Command m_autoSelected;
-  private final SendableChooser<Command> m_chooser = new SendableChooser<>();
+  //private static final String kDefaultAuto = "Default";
+  //private static final String kCustomAuto = "My Auto";
+  //Command m_autoSelected;
+  //private final SendableChooser<Command> m_chooser = new SendableChooser<>();
  
-  int _timesInMotionMagic;
+  //int _timesInMotionMagic;
   /**
    * This function is run when the robot is first started up and should be
    * used for any initialization code.
    */
   @Override
   public void robotInit() {
-    m_chooser.setDefaultOption("Default Option", new AutoCommand());
+    //m_chooser.setDefaultOption("Default Option", new AutoCommand());
 
     leftDrive = new WPI_TalonSRX(RobotMap.L_TALON);
     rightDrive = new WPI_TalonSRX(RobotMap.R_TALON);
@@ -123,7 +124,7 @@ public class Robot extends TimedRobot {
     kElevator = new Elevator(eTalon, eVictor);
     kArm = new Arm(aTalon, aVictor);
     kIntake = new Intake(iVictor);
-    //kVisionProcessingServer = new VisionProcessingServer();
+    kVisionProcessingServer = new VisionProcessingServer();
 
     compressor = new Compressor();
     //compressor.start();
@@ -133,10 +134,11 @@ public class Robot extends TimedRobot {
     kHatch = new HatchIntake(hsGrab, hsPunch);
 
     cam0 = CameraServer.getInstance().startAutomaticCapture();
+    
 
     oi = new OI();
 
-    _timesInMotionMagic = 0;
+    //_timesInMotionMagic = 0;
     
     rightDrive.setSensorPhase(false);
     rightDrive.setInverted(false);
@@ -150,9 +152,9 @@ public class Robot extends TimedRobot {
 
     iVictor.setInverted(false);
     eTalon.configNeutralDeadband(0);
+    eTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
     eVictor.configNeutralDeadband(0);
     
-    //VisionProcessingServer.pipeline.setNumber(3);
 
     //SmartDashboard.putNumber("Left Wheel", leftDrive.get());
     //SmartDashboard.putNumber("Right Wheel", rightDrive.get());
@@ -174,8 +176,8 @@ public class Robot extends TimedRobot {
       aTalon.setSelectedSensorPosition(0);
 
     //reset arm to max at bot
-    if(!aBot.get() && aTalon.getSelectedSensorPosition() > 3000)
-      aTalon.setSelectedSensorPosition(3336);
+    if(aBot.get() && aTalon.getSelectedSensorPosition() > 3000)
+      aTalon.setSelectedSensorPosition(3390);
 
     //reset elevator to zero at bot
     if(!eBot.get() && eTalon.getSelectedSensorPosition() != 0)
@@ -183,7 +185,7 @@ public class Robot extends TimedRobot {
 
     //reset elevator to max at top
     if(!eTop.get() && eTalon.getSelectedSensorPosition() > 19000)
-      eTalon.setSelectedSensorPosition(19542);
+      eTalon.setSelectedSensorPosition(19813);
 
     //SmartDashboard.putNumber("Elevator Position", eTalon.getSelectedSensorPosition());
     //SmartDashboard.putNumber("target position", kElevator.getPos());
@@ -192,12 +194,11 @@ public class Robot extends TimedRobot {
     //SmartDashboard.putBoolean("Elevator Down", eBot.get());
     //SmartDashboard.putBoolean("Arm Top", aTop.get());
     //SmartDashboard.putBoolean("Arm Down", aBot.get());
-    /*
-    SmartDashboard.putBoolean("Intake Switch", iSwitch.get());
+  
+    //SmartDashboard.putBoolean("Intake Switch", iSwitch.get());
     //SmartDashboard.putNumber("Arm Encoder", aTalon.getSelectedSensorPosition());
     //SmartDashboard.putNumber("Elevator Encoder", eTalon.getSelectedSensorPosition());
-    SmartDashboard.putNumber("Encoder Value", VisionDriving.e);
-    */
+    
     //cool stuff
     //SmartDashboard.putNumber("SensorVel", leftDrive.getSelectedSensorVelocity(0));
 		//SmartDashboard.putNumber("SensorPos", leftDrive.getSelectedSensorPosition(0));
@@ -244,11 +245,11 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    m_autoSelected = m_chooser.getSelected();
+    //m_autoSelected = m_chooser.getSelected();
     // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
 
-    if(m_autoSelected != null)
-    m_autoSelected.start();
+    //if(m_autoSelected != null)
+    //m_autoSelected.start();
   }
 
   /**
@@ -261,10 +262,13 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    /*
     if(m_autoSelected != null)
     {
       m_autoSelected.cancel();
     }
+    */
+    VisionProcessingServer.table.getEntry("camMode").setNumber(1);
   }
 
   /**

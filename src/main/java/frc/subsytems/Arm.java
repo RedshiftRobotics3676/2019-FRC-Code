@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 //import com.sun.java.swing.plaf.windows.TMSchema.Control;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import frc.robot.Robot;
+import frc.robot.RobotMap;
 
 
 public class Arm extends Subsystem
@@ -58,13 +59,13 @@ public class Arm extends Subsystem
     switch(mode)
     {
       case 1: pos = 0; break;
-      case 2: pos = 390; break;
-      case 3: pos = 2830; break;
-      case 4: pos = 2830; break;
-      case 5: pos = 2175; break;
-      case 6: pos = 3275; break;
-      case 7: pos = 2175; break;
-      case 8: pos = 2175; break;
+      case 2: pos = 273; break;
+      case 3: pos = 2429; break;
+      case 4: pos = 2429; break;
+      case 5: pos = 2380; break;
+      case 6: pos = 3379; break;
+      case 7: pos = 2005; break;
+      case 8: pos = 1570; break;
       default: pos = 0; break;
     }
   }
@@ -76,14 +77,15 @@ public class Arm extends Subsystem
 
   public void goPosition()
   {
-   cPos = Robot.aTalon.getSelectedSensorPosition();
- 
-   if(pos -cPos <= -25)
-     up();
-   else if(pos - cPos >= 25)
-     down();
-   else
-     hold();
+    cPos = Robot.aTalon.getSelectedSensorPosition();
+    int x = Math.abs(cPos) < 300?1:0;
+
+    if(pos -cPos <= -65)
+      up();
+    else if(pos - cPos >= 65)
+      down();
+    else
+      hold();
   }
  
   public boolean done()
@@ -91,6 +93,23 @@ public class Arm extends Subsystem
     return Math.abs(pos - cPos) <= 25;
   }
  
+  public void MMInit()
+  {  
+    aVictor.setInverted(false);
+    aTalon.configMotionCruiseVelocity(100);
+    aTalon.configMotionAcceleration(1960);
+    //eTalon.config_kD(0, .003); //.003
+    //eTalon.config_kI(0, .00033); //.00033
+    aTalon.config_kP(0, .3);//.3
+    //eTalon.config_kF(0, .261);//.261
+    
+ }
+
+  public void goMM(double dist)
+  {
+    aTalon.set(ControlMode.Position, dist);
+    aVictor.set(ControlMode.Position,dist);
+  }
 
   @Override
   public void initDefaultCommand() {

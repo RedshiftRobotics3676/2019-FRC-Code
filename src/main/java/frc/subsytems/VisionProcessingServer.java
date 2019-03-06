@@ -1,4 +1,4 @@
-/*package frc.subsytems;
+package frc.subsytems;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 
 public class VisionProcessingServer extends Subsystem {
 
-    NetworkTable table;
+    public static NetworkTable table;
     public static NetworkTableEntry pipeline;
     NetworkTableEntry light;
     NetworkTableEntry h1E;
@@ -26,7 +26,7 @@ public class VisionProcessingServer extends Subsystem {
     public VisionProcessingServer(){
         table = NetworkTableInstance.getDefault().getTable("limelight");
         pipeline = table.getEntry("pipeline");
-        light = table.getEntry("ledMode");
+        VisionProcessingServer.table.getEntry("camMode").setNumber(0);
         getVars();
     }
 
@@ -42,14 +42,16 @@ public class VisionProcessingServer extends Subsystem {
         pipeline.setNumber(2);
         WpE = table.getEntry("tlong");
 
-        LeftGain =  table.getEntry("tx").getDouble(0.0);
-        RightGain = -1 * table.getEntry("tx").getDouble(0.0);
+        //LeftGain =  table.getEntry("tx").getDouble(0.0);
+        //RightGain = -1 * table.getEntry("tx").getDouble(0.0);
 
         h1 = 160;
         h2 = 160;
         Wp = 160;
-        theta = 2;
-        radius = 4;
+        LeftGain = 1;
+        RightGain = 1;
+        theta = 4;
+        radius = 20;
         //theta = 2*Math.atan((Wp*Math.tan(Math.toRadians(table.getEntry("tx").getDouble(0.0))))/(320*((h1/h2)-1)));
         //radius = (Q*Math.sin(theta))/((h1/h2)-1);
         
@@ -57,4 +59,4 @@ public class VisionProcessingServer extends Subsystem {
     @Override
     protected void initDefaultCommand() {
     }
-}*/
+}

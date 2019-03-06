@@ -14,14 +14,15 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.OI;
 import frc.robot.Robot;
+import frc.robot.RobotMap;
 
 public class Elevator extends Subsystem
 {
     WPI_TalonSRX eTalon;
     WPI_VictorSPX eVictor;
-    public static final double dSpeed = .2;
-    public static final double uSpeed = .4;
-    public static final double hSpeed = .05;
+    public static final double dSpeed = .15;
+    public static final double uSpeed = .3;
+    public static final double hSpeed = .11;
 
     public static final double Kp = 0.01;
     public static final double Ki = 0.01;
@@ -51,14 +52,15 @@ public class Elevator extends Subsystem
 
   public void up()
   {
-    eTalon.set(ControlMode.PercentOutput, -uSpeed);
-    eVictor.set(ControlMode.PercentOutput, uSpeed);
+      eTalon.set(ControlMode.PercentOutput, -uSpeed);
+      eVictor.set(ControlMode.PercentOutput, uSpeed);
   }
 
   public void down()
   {
-    eTalon.set(ControlMode.PercentOutput, dSpeed);
-    eVictor.set(ControlMode.PercentOutput, -dSpeed);
+      eTalon.set(ControlMode.PercentOutput, dSpeed);
+      eVictor.set(ControlMode.PercentOutput, -dSpeed);
+    
   }
 
   public void hold()
@@ -96,8 +98,8 @@ public class Elevator extends Subsystem
       case 4: pos = 13886; break;
       case 5: pos = 11133; break;
       case 6: pos = 0; break;
-      case 7: pos = 4394; break;
-      case 8: pos = 17873; break;
+      case 7: pos = 3177; break;
+      case 8: pos = 15426; break;
       default: pos = 0; break;
     }
   }
@@ -108,19 +110,38 @@ public class Elevator extends Subsystem
 
   public void goPosition()
   {
-   cPos = Robot.eTalon.getSelectedSensorPosition();
- 
-   if(pos -cPos <= -25)
-     down();
-   else if(pos - cPos >= 25)
-     up();
-   else
-     hold();
+    cPos = Robot.eTalon.getSelectedSensorPosition();
+    //int x = Math.abs(cPos) < 200?1:0;
+
+    if(pos -cPos <= -65)
+      down();
+    else if(pos - cPos >= 65)
+      up();
+    else
+      hold();
   }
 
   public boolean done()
   {
     return Math.abs(pos - cPos) <= 25;
+  }
+
+  public void MMInit()
+  {  
+    eVictor.set(ControlMode.Follower,RobotMap.E_TALON);
+    eVictor.setInverted(true);
+    eTalon.configMotionCruiseVelocity(100);
+    eTalon.configMotionAcceleration(1960);
+    //eTalon.config_kD(0, .003); //.003
+    //eTalon.config_kI(0, .00033); //.00033
+    eTalon.config_kP(0, .3);//.3
+    //eTalon.config_kF(0, .261);//.261
+ }
+
+  public void goMM(double dist)
+  {
+    eTalon.set(ControlMode.Position, dist);
+    eVictor.set(ControlMode.Position, dist);
   }
 
   @Override
