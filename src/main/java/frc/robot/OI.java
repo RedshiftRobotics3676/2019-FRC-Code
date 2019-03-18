@@ -66,18 +66,10 @@ public class OI
     
     x2.whenPressed(new HatchGrab());
     a2.whileHeld(new OnePunch());
-    y2.toggleWhenPressed(new VisionDriving());
+    //y2.toggleWhenPressed(new VisionDriving());
+    //b2.whenPressed(new DriveMM());
     
     //Positions
-    if(stick.getPOV(0) == 270)
-      Scheduler.getInstance().add(new PositionControl(1));
-    if(stick.getPOV(0) == 90)
-      Scheduler.getInstance().add(new PositionControl(2));
-    if(stick.getPOV(0) == 180)
-      Scheduler.getInstance().add(new PositionControl(3));
-    if(stick.getPOV(0) == 0)
-      Scheduler.getInstance().add(new PositionControl(4));
-
     x.whenPressed(new PositionControl(5));//ball in
     b.whenPressed(new PositionControl(6));//ground in
     a.whenPressed(new PositionControl(7));//bottom rocket

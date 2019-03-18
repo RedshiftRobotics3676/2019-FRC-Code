@@ -23,11 +23,12 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.command.Subsystem;
 //import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.commands.AutoCommand;
-import frc.commands.VisionDriving;
+//import frc.commands.VisionDriving;
 //import frc.commands.*;
 import frc.subsytems.*;
 import frc.subsytems.DriveTrain;
@@ -72,7 +73,6 @@ public class Robot extends TimedRobot {
   public static Arm kArm;
   public static HatchIntake kHatch;
   public static Intake kIntake;
-
   
   public static Compressor compressor;
   public static UsbCamera cam0;
@@ -93,7 +93,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     //m_chooser.setDefaultOption("Default Option", new AutoCommand());
-
+  
     leftDrive = new WPI_TalonSRX(RobotMap.L_TALON);
     rightDrive = new WPI_TalonSRX(RobotMap.R_TALON);
 
@@ -110,9 +110,11 @@ public class Robot extends TimedRobot {
 
     aTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
     eTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+    leftDrive.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+    rightDrive.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
 
-    eBot = new DigitalInput(1);
-    eTop = new DigitalInput(0);
+    eBot = new DigitalInput(0);
+    eTop = new DigitalInput(1);
     aBot = new DigitalInput(3);
     aTop = new DigitalInput(4);
     iSwitch = new DigitalInput(5);
@@ -125,7 +127,7 @@ public class Robot extends TimedRobot {
     kArm = new Arm(aTalon, aVictor);
     kIntake = new Intake(iVictor);
     kVisionProcessingServer = new VisionProcessingServer();
-
+    VisionProcessingServer.table.getEntry("camMode").setNumber(1);
     compressor = new Compressor();
     //compressor.start();
     compressor.setClosedLoopControl(true);
@@ -142,13 +144,17 @@ public class Robot extends TimedRobot {
     
     rightDrive.setSensorPhase(false);
     rightDrive.setInverted(false);
+    //rightDrive.configOpenloopRamp(.7);
     
     leftDrive.setSensorPhase(true);
     leftDrive.setInverted(false);
+    //leftDrive.configOpenloopRamp(.7);
 
-    aTalon.setInverted(false);
-    aTalon.setSensorPhase(true);
-    aVictor.setInverted(false);
+    aTalon.setInverted(true);
+    aTalon.setSensorPhase(false);
+    aTalon.configNeutralDeadband(0);
+    aVictor.configNeutralDeadband(0);
+    aVictor.setInverted(true);
 
     iVictor.setInverted(false);
     eTalon.configNeutralDeadband(0);
@@ -158,6 +164,7 @@ public class Robot extends TimedRobot {
 
     //SmartDashboard.putNumber("Left Wheel", leftDrive.get());
     //SmartDashboard.putNumber("Right Wheel", rightDrive.get());
+    VisionProcessingServer.table.getEntry("camMode").setNumber(1);
   }
 
   /**
@@ -170,23 +177,15 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
+    //SmartDashboard.putBoolean("eTop", Robot.eTop.get());
+    //SmartDashboard.putBoolean("eBot", Robot.eBot.get());
+    //SmartDashboard.putBoolean("aTop", Robot.aTop.get());
+    //SmartDashboard.putBoolean("aBot", Robot.aBot.get());
+    //SmartDashboard.putNumber("Elevator Encoder", eTalon.getSelectedSensorPosition());
+    //SmartDashboard.putNumber("Arm Encoder", aTalon.getSelectedSensorPosition());
+    SmartDashboard.putNumber("Right Encoder", rightDrive.getSelectedSensorPosition());
+    SmartDashboard.putNumber("Left Encoder", leftDrive.getSelectedSensorPosition());
     
-    //reset arm to zero at top
-    if(!aTop.get() && aTalon.getSelectedSensorPosition() != 0)
-      aTalon.setSelectedSensorPosition(0);
-
-    //reset arm to max at bot
-    if(aBot.get() && aTalon.getSelectedSensorPosition() > 3000)
-      aTalon.setSelectedSensorPosition(3390);
-
-    //reset elevator to zero at bot
-    if(!eBot.get() && eTalon.getSelectedSensorPosition() != 0)
-      eTalon.setSelectedSensorPosition(0);
-
-    //reset elevator to max at top
-    if(!eTop.get() && eTalon.getSelectedSensorPosition() > 19000)
-      eTalon.setSelectedSensorPosition(19813);
-
     //SmartDashboard.putNumber("Elevator Position", eTalon.getSelectedSensorPosition());
     //SmartDashboard.putNumber("target position", kElevator.getPos());
     //SmartDashboard.putNumber("Arm Position", aTalon.getSelectedSensorPosition());
@@ -268,7 +267,7 @@ public class Robot extends TimedRobot {
       m_autoSelected.cancel();
     }
     */
-    VisionProcessingServer.table.getEntry("camMode").setNumber(1);
+
   }
 
   /**
@@ -277,7 +276,6 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     Scheduler.getInstance().run();
-
     //Limit Switch Testing
   }
   int i = 0;
@@ -291,11 +289,5 @@ public class Robot extends TimedRobot {
       i = 0;
     }
     i++;
-  }
-
-
-  public static void logNumber(String name, double value)
-  {
-      //SmartDashboard.putNumber(name, value);
   }
 }

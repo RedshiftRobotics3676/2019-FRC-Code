@@ -14,13 +14,14 @@ import frc.commands.DriveMM;
 //import frc.commands.TurnToAngle;
 import frc.robot.OI;
 import frc.robot.Robot;
+import frc.robot.RobotMap;
 
 public class DriveTrain extends Subsystem
 {
     DifferentialDrive d;
     WPI_TalonSRX leftMaster, rightMaster;
     WPI_VictorSPX leftFollower, rightFollower;
-    final double speed = .8;
+    final double speed = .8;//.8
 
   public DriveTrain(WPI_TalonSRX left, WPI_TalonSRX right, WPI_VictorSPX lv, WPI_VictorSPX rv)
   {
@@ -32,25 +33,31 @@ public class DriveTrain extends Subsystem
 
     d = new DifferentialDrive(leftMaster, rightMaster);
 
+    //rightMaster.setInverted(true);
+
     leftFollower.follow(leftMaster);
     rightFollower.follow(rightMaster);
 
     d.setSafetyEnabled(false);
+    //d.setExpiration(.1);
 
-    //Robot.logNumber("DriveTrain", 1);
+    leftMaster.setSelectedSensorPosition(0);
+    rightMaster.setSelectedSensorPosition(0);
   }
 
   public void drive(Joystick stick)
   {
+    //System.out.println("Wow it drove");
     d.arcadeDrive(stick.getRawAxis(1)*-1*speed, stick.getRawAxis(2)*speed, true);
+    //leftMaster.set(ControlMode.PercentOutput, stick.getRawAxis(1));
   }
 
   public void drive2(double left, double right){
-    leftMaster.set(left);
-    rightMaster.set(right);
+    leftMaster.set(0.3*-left);
+    rightMaster.set(0.3*right);
   }
 
-  public void driveMM(Joystick stick, double dist)
+  public void driveMM(double dist)
   {
     leftMaster.set(ControlMode.MotionMagic, dist);
     rightMaster.set(ControlMode.MotionMagic, dist);
@@ -82,47 +89,25 @@ public class DriveTrain extends Subsystem
 
   public void MMInit()
   {
-    leftMaster.configFactoryDefault();
-    leftMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-    leftMaster.setSelectedSensorPosition(0, 0, 200);
-    leftMaster.configNominalOutputForward(0);
-    leftMaster.configNominalOutputReverse(0);
-    leftMaster.configPeakOutputForward(1);
-    leftMaster.configPeakOutputReverse(-1);
-    leftMaster.configNeutralDeadband(.05);
-    //leftMaster.configVoltageCompSaturation(0.5);
-    //leftMaster.enableVoltageCompensation(true);
-    leftMaster.configMotionCruiseVelocity(1960);
-    leftMaster.configMotionAcceleration(1960);
-    //leftMaster.configAllowableClosedloopError(slotIdx, allowableCloseLoopError, timeoutMs)
+    //rightMaster.setSelectedSensorPosition(0);
+    rightMaster.setSensorPhase(true);
+    //rightMaster.setInverted(true);
+    rightFollower.set(ControlMode.Follower,RobotMap.R_TALON);
+    //rightFollower.setInverted(true);
+    rightMaster.config_kD(0, 10.4); //128
+    rightMaster.config_kI(0, 0); //0
+    rightMaster.config_kP(0, 1.04);//12.8
+    rightMaster.config_kF(0, 0.26318497555);//.37818853974122
 
-    leftMaster.config_kD(0, .003); //.003
-    //leftMaster.config_IntegralZone(0, 50);
-    leftMaster.config_kI(0, .00033); //.00033
-    leftMaster.config_kP(0, .3);//.3
-    leftMaster.config_kF(0, .261);//.261
-    /*
-    rightMaster.configFactoryDefault();
-    rightMaster.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-    
-    rightMaster.setSelectedSensorPosition(0, 1, 200);
-    rightMaster.configNominalOutputForward(0);
-    rightMaster.configNominalOutputReverse(0);
-    rightMaster.configPeakOutputForward(1);
-    rightMaster.configPeakOutputReverse(-1);
-    rightMaster.configNeutralDeadband(.05);
-    //rightMaster.configVoltageCompSaturation(0.5);
-    //rightMaster.enableVoltageCompensation(true);
-    rightMaster.configMotionCruiseVelocity(1960);
-    rightMaster.configMotionAcceleration(1960);
-    //rightMaster.configAllowableClosedloopError(slotIdx, allowableCloseLoopError, timeoutMs)
-
-    rightMaster.config_kD(1, .003); //.003
-    //rightMaster.config_IntegralZone(0, 50);
-    rightMaster.config_kI(1, .00033); //.00033
-    rightMaster.config_kP(1, .3);//.3
-    rightMaster.config_kF(1, .261);//.261
-    */
+    //leftMaster.setSelectedSensorPosition(0);
+    leftMaster.setSensorPhase(true);
+    //leftMaster.setInverted(true);
+    leftFollower.set(ControlMode.Follower,RobotMap.L_TALON);
+    //leftFollower.setInverted(true);
+    leftMaster.config_kD(0, 10.4); //128
+    leftMaster.config_kI(0, 0); //0
+    leftMaster.config_kP(0, 1.04);//12.8
+    leftMaster.config_kF(0, 0.26318497555);//.37818853974122
   }
 
   @Override

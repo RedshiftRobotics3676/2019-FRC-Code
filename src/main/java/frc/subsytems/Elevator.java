@@ -22,7 +22,7 @@ public class Elevator extends Subsystem
     WPI_VictorSPX eVictor;
     public static final double dSpeed = .15;
     public static final double uSpeed = .3;
-    public static final double hSpeed = .11;
+    public static final double hSpeed = .05;
 
     public static final double Kp = 0.01;
     public static final double Ki = 0.01;
@@ -35,38 +35,53 @@ public class Elevator extends Subsystem
   {
     eTalon = talon;
     eVictor = victor;
+    pos = 0;
 
-    eTalon.setInverted(false);
+    eTalon.setInverted(true);
 
     //eVictor.follow(eTalon);
-    eVictor.setInverted(false);
+    eVictor.setInverted(true);
     eVictor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+    eTalon.setSensorPhase(true);
+    //cPos = Robot.eTalon.getSelectedSensorPosition();
+    eTalon.setSelectedSensorPosition(0);
 
-    pos = 0;
-    cPos = Robot.eTalon.getSelectedSensorPosition();
-
-    //eTalon.setSafetyEnabled(false);
-    //eTalon.config_kD(slotIdx, value);
-    //PIDController pc = new PIDController(Kp, Ki, Kd, Kf, (PIDSource)eTalon, (PIDOutput)eTalon);
+    MMInit();
   }
 
   public void up()
   {
-      eTalon.set(ControlMode.PercentOutput, -uSpeed);
-      eVictor.set(ControlMode.PercentOutput, uSpeed);
+      eTalon.set(ControlMode.PercentOutput, uSpeed);
+      eVictor.set(ControlMode.PercentOutput, -uSpeed);
+
+    //reset elevator to max at top
+    if(!Robot.eTop.get())
+      eTalon.setSelectedSensorPosition(20196);
   }
 
   public void down()
   {
-      eTalon.set(ControlMode.PercentOutput, dSpeed);
-      eVictor.set(ControlMode.PercentOutput, -dSpeed);
+      eTalon.set(ControlMode.PercentOutput, -dSpeed);
+      eVictor.set(ControlMode.PercentOutput, dSpeed);
+
+    //reset elevator to zero at bot
+    if(!Robot.eBot.get())
+      eTalon.setSelectedSensorPosition(0);
     
   }
 
   public void hold()
   {
-    eTalon.set(ControlMode.PercentOutput, -hSpeed);
-    eVictor.set(ControlMode.PercentOutput, hSpeed);
+    eTalon.set(ControlMode.PercentOutput, hSpeed);
+    eVictor.set(ControlMode.PercentOutput, -hSpeed);
+
+    //reset elevator to zero at bot
+    if(!Robot.eBot.get())
+      eTalon.setSelectedSensorPosition(0);
+
+    //reset elevator to max at top
+    if(!Robot.eTop.get())
+      eTalon.setSelectedSensorPosition(20196);
   }
   public void stop()
   {
@@ -74,41 +89,23 @@ public class Elevator extends Subsystem
     eVictor.set(ControlMode.PercentOutput, 0.0);
   }
 
-  public void pos(double dist)
-  {
-    eTalon.set(ControlMode.Position, dist);
-  }  
-
-  public void magic()
-  {
-    
-  }
-  public void setEncoder(int x)
-  {
-    //eTalon.setSelectedSensorPosition(x, 2, 200);
-  }
-
   public void setPosition(int mode)
   {
     switch(mode)
     {
-      case 1: pos = 0; break;
-      case 2: pos = 0; break;
-      case 3: pos = 0; break;
-      case 4: pos = 13886; break;
-      case 5: pos = 11133; break;
-      case 6: pos = 0; break;
-      case 7: pos = 3177; break;
-      case 8: pos = 15426; break;
+      case 1: pos = 0; break;//start
+      case 2: pos = 0; break;//travel
+      case 3: pos = 0; break;//hatch intake
+      case 4: pos = 13886; break;//hatch high
+      case 5: pos = 11133; break;//ball in
+      case 6: pos = 0; break;//ground in
+      case 7: pos = 3229; break;//bottom rocket
+      case 8: pos = 17676; break;//top rocket
       default: pos = 0; break;
     }
   }
   
-  public int getPos() {
-    return pos;
-  }
-
-  public void goPosition()
+  /*public void goPosition()
   {
     cPos = Robot.eTalon.getSelectedSensorPosition();
     //int x = Math.abs(cPos) < 200?1:0;
@@ -119,29 +116,29 @@ public class Elevator extends Subsystem
       up();
     else
       hold();
-  }
-
-  public boolean done()
+  }*/
+  
+  /*public boolean done()
   {
     return Math.abs(pos - cPos) <= 25;
-  }
+  }*/
 
   public void MMInit()
   {  
+    eTalon.setSensorPhase(true);
+    eTalon.setInverted(true);
     eVictor.set(ControlMode.Follower,RobotMap.E_TALON);
     eVictor.setInverted(true);
-    eTalon.configMotionCruiseVelocity(100);
-    eTalon.configMotionAcceleration(1960);
-    //eTalon.config_kD(0, .003); //.003
-    //eTalon.config_kI(0, .00033); //.00033
-    eTalon.config_kP(0, .3);//.3
-    //eTalon.config_kF(0, .261);//.261
+    eTalon.config_kD(0, 128); //128
+    eTalon.config_kI(0, 0); //0
+    eTalon.config_kP(0, 12.8);//12.8
+    eTalon.config_kF(0, .37818853974122);//.37818853974122
  }
 
-  public void goMM(double dist)
+  public void goMM()
   {
-    eTalon.set(ControlMode.Position, dist);
-    eVictor.set(ControlMode.Position, dist);
+    eTalon.set(ControlMode.MotionMagic, pos);
+    eVictor.set(ControlMode.MotionMagic, pos);
   }
 
   @Override

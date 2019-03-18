@@ -1,23 +1,22 @@
-package frc.commands;
+/*package frc.commands.Drive;
 
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants;
 import frc.robot.OI;
 import frc.robot.Robot;
 import frc.subsytems.VisionProcessingServer;
 
 public class VisionDriving extends Command {
 
-  
-  double LeftGain;
-  double RightGain;
-  double turn;
-  double drive;
-  public static double e ;
-  double b;
-  boolean v;
+  double LeftGain, RightGain, turn, radius, tx, b;
+  public static double e;
   int x;
+  boolean v;
+  NetworkTable table;
+  NetworkTableEntry pipeline;
 
   public VisionDriving() {
     requires(Robot.kDriveTrain);
@@ -26,92 +25,114 @@ public class VisionDriving extends Command {
 
   @Override
   protected void initialize() {
-    Robot.rightDrive.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
     Robot.rightDrive.setSelectedSensorPosition(0);
 
+    table = VisionProcessingServer.table;
+    table.getEntry("camMode").setNumber(0);
+    Robot.kVisionProcessingServer.getVars2();
     Robot.kVisionProcessingServer.getVars();
+    
+    pipeline = table.getEntry("pipeline");
     LeftGain = Robot.kVisionProcessingServer.LeftGain;
     RightGain = Robot.kVisionProcessingServer.RightGain;
     turn = Robot.kVisionProcessingServer.theta;
-    drive = Robot.kVisionProcessingServer.radius;
+    radius = Robot.kVisionProcessingServer.radius;
+    tx = Robot.kVisionProcessingServer.tx;
 
-    b = 11.0;
+    b = Constants.VisionDrivingRad;
     v = false;
-    x = 0;
+    x = -1;
     e = 0.0;
   }
 
   @Override
   protected void execute() {
-    if (e != (turn*b) && x==0)
-    {
-      Robot.kDriveTrain.drive2(OI.getJoystick().getRawAxis(1)*LeftGain, OI.getJoystick().getRawAxis(1)*RightGain);
-      e = Robot.rightDrive.getSelectedSensorPosition()*6.3*Math.PI/4096;
-      SmartDashboard.putNumber("Encoder",e);
-      SmartDashboard.putNumber("Drive",b*Math.PI/2);
+    e = Robot.rightDrive.getSelectedSensorPosition()*6.3*Math.PI/4096;
+    SmartDashboard.putNumber("Encoder",e);
 
+    if (tx != 0.0 && x == -1){
+      double spd0 = table.getEntry("tx").getDouble(0.0)/Math.abs(table.getEntry("tx").getDouble(0.0));
+      Robot.kDriveTrain.drive2(OI.getJoystick().getRawAxis(1)*spd0, OI.getJoystick().getRawAxis(1)*spd0);
     }
 
-    if (5 == Math.abs((turn*b)-e) && x==0)
+    if(tx == 0.0 && x == -1){
+      Robot.kDriveTrain.drive2(0, 0);
+      Robot.kVisionProcessingServer.getVars2();
+      Robot.kVisionProcessingServer.getVars();
+      x = 0;
+    }
+    
+    if (Constants.VisionDrivingTurnTollerance < Math.abs((turn*b)-e) && x == 0);
     {
-      x=1;
+      double spd1 = ((turn*b)-e)/Math.abs((turn*b)-e);
+      Robot.kDriveTrain.drive2(OI.getJoystick().getRawAxis(1)*LeftGain*spd1, OI.getJoystick().getRawAxis(1)*RightGain*spd1);
+    }
+    
+    if (Constants.VisionDrivingTurnTollerance >= Math.abs((turn*b)-e) && x == 0)
+    {
+      Robot.kDriveTrain.drive2(0, 0);
       Robot.rightDrive.setSelectedSensorPosition(0);
+      x=1;
     }
 
-    while (e != (drive/Math.tan(turn)) && x==1)
+    if (Constants.VisionDrivingDriveTollerance < Math.abs((radius*Math.cos(turn))-e) && x == 1)
     {
-      e = Robot.rightDrive.getSelectedSensorPosition()*6.3*Math.PI/4096;
-      SmartDashboard.putNumber("Encoder",e);
-      Robot.kDriveTrain.drive2(OI.getJoystick().getRawAxis(1), OI.getJoystick().getRawAxis(1));
+      double spd2 = (radius*Math.cos(turn)-e)/Math.abs(radius*Math.cos(turn)-e);
+      Robot.kDriveTrain.drive2(OI.getJoystick().getRawAxis(1)*spd2, OI.getJoystick().getRawAxis(1)*spd2);
     }
 
-    if (5 < Math.abs((drive/Math.tan(turn))-e) && x==1)
+    if (Constants.VisionDrivingDriveTollerance >= Math.abs((radius*Math.cos(turn))-e) && x==1)
     {
+      Robot.kDriveTrain.drive2(0, 0);
       x=2;
       Robot.rightDrive.setSelectedSensorPosition(0);  
     }
 
-    while (e != b*Math.PI/2 && x==2)
+    if (Constants.VisionDrivingTurnTollerance < Math.abs((b*Math.PI/2)-e) && x==2)
     {
-      e = Robot.rightDrive.getSelectedSensorPosition()*6.3*Math.PI/4096;
-      SmartDashboard.putNumber("Encoder",e);
-      Robot.kDriveTrain.drive2(OI.getJoystick().getRawAxis(1)*-1*LeftGain, OI.getJoystick().getRawAxis(1)*-1*RightGain);
+      double spd3 = ((b*Math.PI/2)-e)/Math.abs((b*Math.PI/2)-e);
+      Robot.kDriveTrain.drive2(OI.getJoystick().getRawAxis(1)*spd3*-LeftGain, OI.getJoystick().getRawAxis(1)*spd3*-RightGain);
     }
 
-    if (5 < Math.abs((b*Math.PI/2)-e) && x==2)
+    if (Constants.VisionDrivingTurnTollerance >= Math.abs((b*Math.PI/2)-e)&& x==2)
     {
+      Robot.kDriveTrain.drive2(0, 0);
       x=3;
       Robot.rightDrive.setSelectedSensorPosition(0);
     }
 
-    while (e != drive && x==3){
-      Robot.kVisionProcessingServer.getVars();
+    if (Constants.VisionDrivingDriveTollerance < Math.abs(radius*Math.sin(turn)-e) && x==3){
+      Robot.kVisionProcessingServer.getVars2();
+
       if(LeftGain != 0){
         Robot.kDriveTrain.drive2(OI.getJoystick().getRawAxis(1)*LeftGain, OI.getJoystick().getRawAxis(1)*RightGain);
       }
       else{
         Robot.kDriveTrain.drive2(OI.getJoystick().getRawAxis(1), OI.getJoystick().getRawAxis(1));
       }
-      e = Robot.rightDrive.getSelectedSensorPosition()*6.25*Math.PI/4096;
-      SmartDashboard.putNumber("Encoder",e);
     }
 
-    if (1 < Math.abs(drive-e) && x==3){
+    if (10.0 >= Math.abs(radius*Math.sin(turn)-e) && x==3){
+      pipeline.setNumber(3);
       v = true;
+      end();
     }
   }
 
   @Override
   protected boolean isFinished() {
-    return false;
+    return v;
   }
 
   @Override
   protected void end() {
+    table.getEntry("camMode").setNumber(1);
+    Robot.kDriveTrain.drive2(0, 0);
+    x = -1;
   }
 
   @Override
   protected void interrupted() {
     end();
   }
-}
+}*/

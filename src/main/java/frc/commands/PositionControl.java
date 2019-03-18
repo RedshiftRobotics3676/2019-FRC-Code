@@ -26,7 +26,8 @@ public class PositionControl extends Command {
   // Called just before this Command runs the first time
   @Override
   protected void initialize() {
-    
+    Robot.kElevator.MMInit();
+    Robot.kArm.MMInit();
     Robot.kArm.setPosition(mode);
     Robot.kElevator.setPosition(mode);
     //System.out.println(Robot.kElevator.getPos());
@@ -35,15 +36,14 @@ public class PositionControl extends Command {
   // Called repeatedly when this Command is scheduled to run
   @Override
   protected void execute() {
-    Robot.kArm.goPosition();
-    Robot.kElevator.goPosition();
+    Robot.kArm.goMM();
+    Robot.kElevator.goMM();
   }
 
   // Make this return true when this Command no longer needs to run execute()
   @Override
   protected boolean isFinished() {
-    return Robot.kArm.done() && Robot.kElevator.done();
-    //return false;
+    return false;
   }
 
   // Called once after isFinished returns true
