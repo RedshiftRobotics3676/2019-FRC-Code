@@ -66,7 +66,7 @@ public class OI
     
     x2.whenPressed(new HatchGrab());
     a2.whileHeld(new OnePunch());
-    //y2.toggleWhenPressed(new VisionDriving());
+    y2.toggleWhenPressed(new VisionDriving());
     //b2.whenPressed(new DriveMM());
     
     //Positions
