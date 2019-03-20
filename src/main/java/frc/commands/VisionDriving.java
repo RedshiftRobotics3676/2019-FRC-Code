@@ -1,4 +1,4 @@
-package frc.commands;
+package frc.commands; 
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
