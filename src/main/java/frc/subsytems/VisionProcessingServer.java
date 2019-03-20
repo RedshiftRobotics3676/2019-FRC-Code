@@ -28,8 +28,6 @@ public class VisionProcessingServer extends Subsystem {
     public VisionProcessingServer(){
         table = NetworkTableInstance.getDefault().getTable("limelight");
         pipeline = table.getEntry("pipeline");
-        getVars();
-        getVars2();
     }
 
     public void getVars(){
@@ -44,26 +42,20 @@ public class VisionProcessingServer extends Subsystem {
         WpE = table.getEntry("tlong").getDouble(0.0);
 
         //Test Values
-        LeftGain = 1;
-        RightGain = -1;
         theta = 1;
         radius = 20;
         //d1 = Height of tape*240/((h1E)*2*Math.tan(Math.toRadians(49.7 / 2)));
         //d2 = Height of tape*240/((h2E)*2*Math.tan(Math.toRadians(49.7 / 2)));
         //theta = Math.asin(Math.abs(d2-d1)/Width);
         //radius = Height of tape*240/((h1E+h2E)*Math.tan(Math.toRadians(49.7 / 2)));
-        ////theta = 2*Math.atan((Wp*Math.tan(Math.toRadians(table.getEntry("tx").getDouble(0.0))))/(320*((h1/h2)-1)));
-        ////radius = (Q*Math.sin(theta))/((h1/h2)-1);
-        
-        pipeline.setNumber(3);
     }
 
     public void getVars2(){
         pipeline.setNumber(2);
 
         tx = table.getEntry("tx").getDouble(0.0);
-        LeftGain = 1;
-        RightGain = -LeftGain;
+        LeftGain = tx;
+        RightGain = -tx;
     }
 
     @Override

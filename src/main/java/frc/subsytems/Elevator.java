@@ -2,6 +2,7 @@ package frc.subsytems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.WPI_MotorSafetyImplem;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
@@ -37,22 +38,20 @@ public class Elevator extends Subsystem
     eVictor = victor;
     pos = 0;
 
+    eVictor.follow(eTalon);
     eTalon.setInverted(true);
-
-    //eVictor.follow(eTalon);
-    eVictor.setInverted(true);
-    eVictor.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
+    eVictor.setInverted(InvertType.OpposeMaster);
     eTalon.setSensorPhase(true);
-    //cPos = Robot.eTalon.getSelectedSensorPosition();
     eTalon.setSelectedSensorPosition(0);
+    eTalon.configNeutralDeadband(0);
+    eVictor.configNeutralDeadband(0);
 
     MMInit();
   }
 
   public void up()
   {
-      eTalon.set(ControlMode.PercentOutput, uSpeed);
-      eVictor.set(ControlMode.PercentOutput, -uSpeed);
+    eTalon.set(ControlMode.PercentOutput, uSpeed);
 
     //reset elevator to max at top
     if(!Robot.eTop.get())
@@ -61,8 +60,7 @@ public class Elevator extends Subsystem
 
   public void down()
   {
-      eTalon.set(ControlMode.PercentOutput, -dSpeed);
-      eVictor.set(ControlMode.PercentOutput, dSpeed);
+    eTalon.set(ControlMode.PercentOutput, -dSpeed);
 
     //reset elevator to zero at bot
     if(!Robot.eBot.get())
@@ -73,7 +71,6 @@ public class Elevator extends Subsystem
   public void hold()
   {
     eTalon.set(ControlMode.PercentOutput, hSpeed);
-    eVictor.set(ControlMode.PercentOutput, -hSpeed);
 
     //reset elevator to zero at bot
     if(!Robot.eBot.get())
@@ -86,7 +83,6 @@ public class Elevator extends Subsystem
   public void stop()
   {
     eTalon.set(ControlMode.PercentOutput, -0.0);
-    eVictor.set(ControlMode.PercentOutput, 0.0);
   }
 
   public void setPosition(int mode)
@@ -125,20 +121,15 @@ public class Elevator extends Subsystem
 
   public void MMInit()
   {  
-    eTalon.setSensorPhase(true);
-    eTalon.setInverted(true);
-    eVictor.set(ControlMode.Follower,RobotMap.E_TALON);
-    eVictor.setInverted(true);
     eTalon.config_kD(0, 128); //128
     eTalon.config_kI(0, 0); //0
     eTalon.config_kP(0, 12.8);//12.8
     eTalon.config_kF(0, .37818853974122);//.37818853974122
- }
+  }
 
   public void goMM()
   {
     eTalon.set(ControlMode.MotionMagic, pos);
-    eVictor.set(ControlMode.MotionMagic, pos);
   }
 
   @Override

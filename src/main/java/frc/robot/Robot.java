@@ -78,6 +78,7 @@ public class Robot extends TimedRobot {
   public static UsbCamera cam0;
 
   public static VisionProcessingServer kVisionProcessingServer;
+  public static EStop kEStop;
 
 
   //private static final String kDefaultAuto = "Default";
@@ -150,17 +151,7 @@ public class Robot extends TimedRobot {
     leftDrive.setInverted(false);
     //leftDrive.configOpenloopRamp(.7);
 
-    aTalon.setInverted(true);
-    aTalon.setSensorPhase(false);
-    aTalon.configNeutralDeadband(0);
-    aVictor.configNeutralDeadband(0);
-    aVictor.setInverted(true);
-
     iVictor.setInverted(false);
-    eTalon.configNeutralDeadband(0);
-    eTalon.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
-    eVictor.configNeutralDeadband(0);
-    
 
     //SmartDashboard.putNumber("Left Wheel", leftDrive.get());
     //SmartDashboard.putNumber("Right Wheel", rightDrive.get());
@@ -183,8 +174,8 @@ public class Robot extends TimedRobot {
     //SmartDashboard.putBoolean("aBot", Robot.aBot.get());
     //SmartDashboard.putNumber("Elevator Encoder", eTalon.getSelectedSensorPosition());
     //SmartDashboard.putNumber("Arm Encoder", aTalon.getSelectedSensorPosition());
-    SmartDashboard.putNumber("Right Encoder", rightDrive.getSelectedSensorPosition());
-    SmartDashboard.putNumber("Left Encoder", leftDrive.getSelectedSensorPosition());
+    //SmartDashboard.putNumber("Right Encoder", rightDrive.getSelectedSensorPosition());
+    //SmartDashboard.putNumber("Left Encoder", leftDrive.getSelectedSensorPosition());
     
     //SmartDashboard.putNumber("Elevator Position", eTalon.getSelectedSensorPosition());
     //SmartDashboard.putNumber("target position", kElevator.getPos());
