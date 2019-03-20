@@ -50,6 +50,7 @@ public class VisionDriving extends Command {
     e = Robot.rightDrive.getSelectedSensorPosition()*6.3*Math.PI/4096;
     SmartDashboard.putNumber("Encoder",e);
     SmartDashboard.putNumber("X", x);
+    x = (int)SmartDashboard.getNumber("X", 0);
 
     if (tx != 0.0 && x < 5){
       Robot.kVisionProcessingServer.getVars2();
@@ -69,16 +70,17 @@ public class VisionDriving extends Command {
     if(tx == 0.0 && x == 5) {
       Robot.rightDrive.setSelectedSensorPosition(0);
       pipeline.setNumber(3);
+      x++;
     }
 
-    if (VisionDrivingTurnTollerance < Math.abs((turn*b)-e) && 5 <= x && x < 10);
+    if (VisionDrivingTurnTollerance < Math.abs((turn*b)-e) && 6 <= x && x < 10);
     {
       LeftGain = ((turn*b)-e);
       RightGain = -((turn*b)-e);
-      x = 5;
+      x = 6;
     }
     
-    if (VisionDrivingTurnTollerance >= Math.abs((turn*b)-e) && 5 <= x && x < 10)
+    if (VisionDrivingTurnTollerance >= Math.abs((turn*b)-e) && 6 <= x && x < 10)
     {
       LeftGain = 0.0;
       RightGain = 0.0;
@@ -87,34 +89,36 @@ public class VisionDriving extends Command {
 
     if(VisionDrivingTurnTollerance >= Math.abs((turn*b)-e) && x == 10) {
       Robot.rightDrive.setSelectedSensorPosition(0);
+      x++;
     }
 
-    if (VisionDrivingDriveTollerance < Math.abs((radius*Math.cos(turn))-e) && 10 <= x  && x < 15)
+    if (VisionDrivingDriveTollerance < Math.abs((radius*Math.cos(turn))-e) && 11 <= x  && x < 15)
     {
       LeftGain = (radius*Math.cos(turn)-e);
       RightGain = (radius*Math.cos(turn)-e);
-      x = 10;
+      x = 11;
     }
 
-    if (VisionDrivingDriveTollerance >= Math.abs((radius*Math.cos(turn))-e) && 10 <= x  && x < 15)
+    if (VisionDrivingDriveTollerance >= Math.abs((radius*Math.cos(turn))-e) && 11 <= x  && x < 15)
     {
       LeftGain = 0.0;
       RightGain = 0.0;      
       x++;
     }
 
-    if(VisionDrivingTurnTollerance >= Math.abs((turn*b)-e) && x == 15) {
+    if(VisionDrivingTurnTollerance >= Math.abs((radius*Math.cos(turn))-e) && x == 15) {
       Robot.rightDrive.setSelectedSensorPosition(0);
+      x++;
     }
 
-    if (VisionDrivingTurnTollerance < Math.abs((b*Math.PI/2)-e) && 15 <= x  && x < 20)
+    if (VisionDrivingTurnTollerance < Math.abs((b*Math.PI/2)-e) && 16 <= x  && x < 20)
     {
       LeftGain = -((b*Math.PI/2)-e);
       RightGain = ((b*Math.PI/2)-e);
-      x = 15;
+      x = 16;
     }
 
-    if (VisionDrivingTurnTollerance >= Math.abs((b*Math.PI/2)-e) && 15 <= x  && x < 20)
+    if (VisionDrivingTurnTollerance >= Math.abs((b*Math.PI/2)-e) && 16 <= x  && x < 20)
     {
       LeftGain = 0.0;
       RightGain = 0.0;
@@ -123,9 +127,10 @@ public class VisionDriving extends Command {
 
     if(VisionDrivingTurnTollerance >= Math.abs((turn*b)-e) && x == 20) {
       Robot.rightDrive.setSelectedSensorPosition(0);
+      x++;
     }
 
-    if (VisionDrivingDriveTollerance < Math.abs(radius*Math.sin(turn)-e) && x == 20){
+    if (VisionDrivingDriveTollerance < Math.abs(radius*Math.sin(turn)-e) && x == 21){
       Robot.kVisionProcessingServer.getVars2();
 
       if(tx != 0){
@@ -138,7 +143,7 @@ public class VisionDriving extends Command {
       }
     }
 
-    if (VisionDrivingDriveTollerance >= Math.abs(radius*Math.sin(turn)-e) && x == 20){
+    if (VisionDrivingDriveTollerance >= Math.abs(radius*Math.sin(turn)-e) && x == 21){
       pipeline.setNumber(3);
       v = true;
     }
