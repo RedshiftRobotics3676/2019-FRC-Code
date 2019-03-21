@@ -54,7 +54,7 @@ public class OI
     
     lb2.whileHeld(new ArmUp());
     lt2.whileHeld(new ArmDown());
-    y2.whenPressed(new ArmStop());
+    b2.whenPressed(new ArmStop());
     /*
     a.whenPressed(new ElevatorUp());
     b.whenPressed(new ElevatorDown());
