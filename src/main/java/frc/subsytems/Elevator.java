@@ -121,9 +121,9 @@ public class Elevator extends Subsystem
 
   public void MMInit()
   {  
-    eTalon.config_kD(0, 128); //128
-    eTalon.config_kI(0, 0); //0
-    eTalon.config_kP(0, 12.8);//12.8
+    eTalon.config_kD(0, .37818853974122*2); //128
+    eTalon.config_kI(0, .00037818853974122); //0
+    eTalon.config_kP(0, 1);//12.8
     eTalon.config_kF(0, .37818853974122);//.37818853974122
   }
 

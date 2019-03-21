@@ -78,7 +78,7 @@ public class Robot extends TimedRobot {
   public static UsbCamera cam0;
 
   public static VisionProcessingServer kVisionProcessingServer;
-  public static EStop kEStop;
+  //public static EStop kEStop;
 
 
   //private static final String kDefaultAuto = "Default";
