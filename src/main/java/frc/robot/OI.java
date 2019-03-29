@@ -41,32 +41,19 @@ public class OI
     rt2 = new JoystickButton(stick2, 8);
     back2 = new JoystickButton(stick2, 9);
     start2 = new JoystickButton(stick2, 10);
-
-    //TurnToAngle Command
-    //Pass the desired angle for the robot to turn to
-    //Press while turning in order to make it stop
-    //a.toggleWhenPressed(new TurnToAngle(90.0));
-
-    //a.toggleWhenPressed(new ElevatorTest());
-
-    //b.toggleWhenPressed(new ElevatorStop());
-
     
     lb2.whileHeld(new ArmUp());
     lt2.whileHeld(new ArmDown());
     b2.whenPressed(new ArmStop());
-    /*
-    a.whenPressed(new ElevatorUp());
-    b.whenPressed(new ElevatorDown());
-    x.whenPressed(new ElevatorHold());
-    */
 
     rb2.whileHeld(new Inhale());
     rt2.whileHeld(new Exhale());
     
     x2.whenPressed(new HatchGrab());
     a2.whileHeld(new OnePunch());
-    //y2.toggleWhenPressed(new VisionDriving());
+    //x2.whenPressed(new ArmStuff());
+    //x2.whenReleased(new HatchRetract()); 
+    //a2.whileHeld(new HatchRelease());
     //b2.whenPressed(new DriveMM());
     
     //Positions
@@ -82,10 +69,6 @@ public class OI
 
     start2.whileHeld(new ElevatorUp());
     back2.whileHeld(new ElevatorDown());
-    //back.whenPressed(new ElevatorHold());
-    
-    /*rb.whileHeld(new ArmUp());
-    lb.whileHeld(new ArmDown());*/
   }
 
   public Joystick getJoystick(int i)
@@ -96,9 +79,14 @@ public class OI
       return stick2;
     return stick;
   }
+  
   public static Joystick getJoystick()
   {
     return stick2;
   }
-
 }
+/*
+Jeroo Benjamin = new Jeroo (0,0,12,NORTH);
+Benjamin.play(Fortnite);
+Epic.Dub(420kill);
+*/

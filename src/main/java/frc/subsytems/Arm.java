@@ -14,7 +14,7 @@ public class Arm extends Subsystem
 {
     WPI_TalonSRX aTalon;
     WPI_VictorSPX aVictor;
-    private static final double speed = .3;
+    private static final double speed = .4;
     private static final double hSpeed = .04;
     private static int pos, cPos;
 
@@ -50,7 +50,7 @@ public class Arm extends Subsystem
     aTalon.set(ControlMode.PercentOutput, speed-.1);
     //aVictor.set(ControlMode.PercentOutput, -speed+.1);
 
-    //reset arm to max at bot
+    //reset arm to max at bot//fortnite
     if(Robot.aBot.get()) //normally closed
       aTalon.setSelectedSensorPosition(3390);
   }
@@ -78,8 +78,8 @@ public class Arm extends Subsystem
     {
       case 1: pos = 0; break;//start
       case 2: pos = 273; break;//travel
-      case 3: pos = 2880; break;//hatch intake
-      case 4: pos = 2880; break;//hatch high
+      case 3: pos = 3050; break;//hatch intake
+      case 4: pos = 3050; break;//hatch high
       case 5: pos = 2130; break;//ball in
       case 6: pos = 3379; break;//ground in
       case 7: pos = 2005; break;//bottom rocket
@@ -107,7 +107,7 @@ public class Arm extends Subsystem
   }*/
  
   public void MMInit()
-  {  
+  {
     aTalon.configMotionCruiseVelocity(1000);
     aTalon.configMotionAcceleration(1000);
     aTalon.config_kD(0, 0); //130.944

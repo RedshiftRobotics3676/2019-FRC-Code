@@ -104,7 +104,6 @@ public class Robot extends TimedRobot {
     eTalon = new WPI_TalonSRX(RobotMap.E_TALON);
     aTalon = new WPI_TalonSRX(RobotMap.A_TALON);
     
-
     eVictor = new WPI_VictorSPX(RobotMap.E_VICTOR);
     aVictor = new WPI_VictorSPX(RobotMap.A_VICTOR);
     iVictor = new WPI_VictorSPX(RobotMap.I_VICTOR);
@@ -116,8 +115,8 @@ public class Robot extends TimedRobot {
 
     eBot = new DigitalInput(0);
     eTop = new DigitalInput(1);
-    aBot = new DigitalInput(3);
-    aTop = new DigitalInput(4);
+    aBot = new DigitalInput(4);
+    aTop = new DigitalInput(3);
     iSwitch = new DigitalInput(5);
 
     hsGrab = new DoubleSolenoid(RobotMap.G_SF, RobotMap.G_SR);
@@ -153,8 +152,6 @@ public class Robot extends TimedRobot {
 
     iVictor.setInverted(false);
 
-    //SmartDashboard.putNumber("Left Wheel", leftDrive.get());
-    //SmartDashboard.putNumber("Right Wheel", rightDrive.get());
     VisionProcessingServer.table.getEntry("camMode").setNumber(1);
   }
 
@@ -172,18 +169,10 @@ public class Robot extends TimedRobot {
     //SmartDashboard.putBoolean("eBot", Robot.eBot.get());
     //SmartDashboard.putBoolean("aTop", Robot.aTop.get());
     //SmartDashboard.putBoolean("aBot", Robot.aBot.get());
-    //SmartDashboard.putNumber("Elevator Encoder", eTalon.getSelectedSensorPosition());
-    //SmartDashboard.putNumber("Arm Encoder", aTalon.getSelectedSensorPosition());
+    SmartDashboard.putNumber("Elevator Encoder", eTalon.getSelectedSensorPosition());
+    SmartDashboard.putNumber("Arm Encoder", aTalon.getSelectedSensorPosition());
     //SmartDashboard.putNumber("Right Encoder", rightDrive.getSelectedSensorPosition());
     //SmartDashboard.putNumber("Left Encoder", leftDrive.getSelectedSensorPosition());
-    
-    //SmartDashboard.putNumber("Elevator Position", eTalon.getSelectedSensorPosition());
-    //SmartDashboard.putNumber("target position", kElevator.getPos());
-    //SmartDashboard.putNumber("Arm Position", aTalon.getSelectedSensorPosition());
-    //SmartDashboard.putBoolean("Elevator Top", eTop.get());
-    //SmartDashboard.putBoolean("Elevator Down", eBot.get());
-    //SmartDashboard.putBoolean("Arm Top", aTop.get());
-    //SmartDashboard.putBoolean("Arm Down", aBot.get());
   
     //SmartDashboard.putBoolean("Intake Switch", iSwitch.get());
     //SmartDashboard.putNumber("Arm Encoder", aTalon.getSelectedSensorPosition());

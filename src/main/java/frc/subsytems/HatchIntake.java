@@ -42,6 +42,39 @@ public class HatchIntake extends Subsystem
     puncher.set(DoubleSolenoid.Value.kForward);
   }
 
+  public void extend()
+  {
+    grabber.set(DoubleSolenoid.Value.kForward);
+  }
+
+  public void open()
+  {
+    puncher.set(DoubleSolenoid.Value.kForward);
+  }
+
+  public void retract()
+  {
+    grabber.set(DoubleSolenoid.Value.kReverse);
+  }
+
+  public void extendClose()
+  {
+    extend();
+    puncher.set(DoubleSolenoid.Value.kReverse);
+  }
+
+  public void grabRetract()
+  {
+    open();
+    retract();
+  }
+
+  public void releaseRetract()
+  {
+    puncher.set(DoubleSolenoid.Value.kReverse);
+    grabber.set(DoubleSolenoid.Value.kReverse);
+  }
+
   public void grabberStop()
   {
     grabber.set(DoubleSolenoid.Value.kForward);

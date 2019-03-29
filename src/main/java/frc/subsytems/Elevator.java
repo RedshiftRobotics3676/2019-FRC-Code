@@ -92,7 +92,7 @@ public class Elevator extends Subsystem
       case 1: pos = 0; break;//start
       case 2: pos = 0; break;//travel
       case 3: pos = 0; break;//hatch intake
-      case 4: pos = 13886; break;//hatch high
+      case 4: pos = 13900; break;//hatch high
       case 5: pos = 11133; break;//ball in
       case 6: pos = 0; break;//ground in
       case 7: pos = 3229; break;//bottom rocket
